@@ -49,19 +49,48 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     }
 
     function registerBoxRef(elem: HTMLDivElement): void {
-        console.log('registering box elem');
-
         boxesRefs.current.push(elem);
     }
 
     function handleOnKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
         if (isAnimating) return;
         if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
-        let movement: Position = {
+        const movement: Position = getMovementFromInputKey(event.key);
+        const targetPosition: Position = getPositionByMovement(playerPosition, movement);
+        if (!positionIsTraversable(targetPosition)) return;
+        const boxInWay: Box | undefined = getBoxAtPosition(targetPosition);
+        let playerCanMove: boolean = !boxInWay || tryToMoveBox(boxInWay, movement);
+        if (playerCanMove) {
+            setPlayerPosition(targetPosition);
+            setIsAnimating(true);
+        }
+    }
+
+    function tryToMoveBox(box: Box, direction: Position): boolean {
+        const targetPosition: Position = getPositionByMovement(box.position, direction);
+        let boxMoved: boolean = false;
+        if (positionIsTraversable(targetPosition) && !getBoxAtPosition(targetPosition)) {
+            const newBoxesState: Box[] = boxesState.map((boxItem) => {
+                if (boxItem.id === box.id) {
+                    return {
+                        ...box,
+                        position: targetPosition,
+                    };
+                }
+                return boxItem;
+            });
+            setBoxesState(newBoxesState);
+            boxMoved = true;
+        }
+        return boxMoved;
+    }
+
+    function getMovementFromInputKey(inputKey: string): Position {
+        const movement: Position = {
             row: 0,
             column: 0,
         };
-        switch (event.key) {
+        switch (inputKey) {
             case 'ArrowRight':
                 movement.column++;
                 break;
@@ -75,42 +104,17 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
                 movement.row++;
                 break;
         }
-        let targetPosition: Position = {
-            row: playerPosition.row + movement.row,
-            column: playerPosition.column + movement.column,
-        };
-        if (isTraversable(targetPosition)) {
-            const boxInWay: Box | undefined = getBoxAtPosition(targetPosition);
-            if (boxInWay) {
-                const targetBoxPosition: Position = {
-                    row: boxInWay.position.row + movement.row,
-                    column: boxInWay.position.column + movement.column,
-                };
-                if (isTraversable(targetBoxPosition) && !getBoxAtPosition(targetBoxPosition)) {
-                    const newBoxesState: Box[] = boxesState.map((box) => {
-                        if (box.id === boxInWay.id) {
-                            return {
-                                ...box,
-                                position: {
-                                    row: box.position.row + movement.row,
-                                    column: box.position.column + movement.column,
-                                },
-                            };
-                        }
-                        return box;
-                    });
-                    setPlayerPosition(targetPosition);
-                    setIsAnimating(true);
-                    setBoxesState(newBoxesState);
-                }
-            } else {
-                setPlayerPosition(targetPosition);
-                setIsAnimating(true);
-            }
-        }
+        return movement;
     }
 
-    function isTraversable(position: Position): boolean {
+    function getPositionByMovement(initialPosition: Position, movement: Position): Position {
+        return {
+            row: initialPosition.row + movement.row,
+            column: initialPosition.column + movement.column,
+        };
+    }
+
+    function positionIsTraversable(position: Position): boolean {
         let desiredRow: string[] = mapTemplate[position.row];
         let field: string | undefined = desiredRow && desiredRow[position.column];
         return ['g', 'd', 'b', 'p'].includes(field);
@@ -127,9 +131,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     return (
         <div tabIndex={-1} className="game" onKeyDown={handleOnKeyDown}>
             <Map template={mapTemplate}></Map>
-            <div ref={playerRef} className="player" onTransitionEnd={handleTransitionEnd}>
-                P
-            </div>
+            <div ref={playerRef} className="player" onTransitionEnd={handleTransitionEnd}></div>
             {useMemo(
                 () =>
                     boxesInitialData.map((box) => (
@@ -139,9 +141,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
                             onTransitionEnd={handleTransitionEnd}
                             key={box.id}
                             data-box-id={box.id}
-                        >
-                            B
-                        </div>
+                        ></div>
                     )),
                 [boxesInitialData]
             )}
