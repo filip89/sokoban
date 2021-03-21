@@ -1,0 +1,29 @@
+@import '../styles/global';
+
+.game {
+    position: relative;
+    display: table;
+    margin: 150px auto;
+}
+
+.player {
+    @include fieldSquare;
+    position: absolute;
+    display: inline-block;
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    text-align: center;
+    transition: 0.2s left linear, 0.2s top linear;
+}
+
+.box {
+    @include fieldSquare;
+    position: absolute;
+    display: inline-block;
+    background-color: yellow;
+    color: black;
+    border: 1px solid black;
+    text-align: center;
+    transition: 0.2s left linear, 0.2s top linear;
+}

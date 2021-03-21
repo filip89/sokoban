@@ -1,0 +1,6 @@
+$field-size: 40px;
+
+@mixin fieldSquare {
+    width: $field-size;
+    height: $field-size;
+}

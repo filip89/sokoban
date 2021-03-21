@@ -1,0 +1,14 @@
+@import '../styles/global';
+
+.map {
+    &__row {
+        display: flex;
+    }
+
+    &__field {
+        @include fieldSquare;
+        background-color: gray;
+        border: 1px solid black;
+        text-align: center;
+    }
+}
