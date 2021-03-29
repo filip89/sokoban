@@ -7,6 +7,7 @@ import * as positionScanner from '../services/MapTemplateEntities';
 import { getMovementFromInputKey } from '../services/InputService';
 import './Game.scss';
 import Map, { MapTemplate } from './Map';
+import BlockGfx from './BlockGfx';
 
 export interface GameProps {
     mapTemplate: MapTemplate;
@@ -33,7 +34,9 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         boxesState.forEach((box) => {
             const boxElem = getBoxElement(box.id);
             if (boxElem) {
-                updateElementPosition(boxElem, box.position);
+                let position: Position = box.position;
+                updateElementPosition(boxElem, position);
+                boxElem.style.zIndex = '' + position.row;
             }
         });
     }, [boxesState]);
@@ -119,22 +122,33 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     }
 
     return (
-        <div tabIndex={-1} className="game" onKeyDown={keyDownHandler} onKeyUp={keyUpHandler}>
-            <Map template={mapTemplate}></Map>
-            <div ref={playerRef} className="player" onTransitionEnd={handleTransitionEnd}></div>
-            {useMemo(
-                () =>
-                    boxesInitialData.map((box) => (
-                        <div
-                            ref={registerBoxRef}
-                            className="box"
-                            onTransitionEnd={handleTransitionEnd}
-                            key={box.id}
-                            data-box-id={box.id}
-                        ></div>
-                    )),
-                [boxesInitialData]
-            )}
+        <div className="game-wrapper">
+            <div tabIndex={-1} className="game" onKeyDown={keyDownHandler} onKeyUp={keyUpHandler}>
+                <Map template={mapTemplate}></Map>
+                <div
+                    ref={playerRef}
+                    className="movable-wrapper"
+                    onTransitionEnd={handleTransitionEnd}
+                    style={{ zIndex: playerPosition.row }}
+                >
+                    <BlockGfx type='player'></BlockGfx>
+                </div>
+                {useMemo(
+                    () =>
+                        boxesInitialData.map((box) => (
+                            <div
+                                className="movable-wrapper"
+                                ref={registerBoxRef}
+                                onTransitionEnd={handleTransitionEnd}
+                                key={box.id}
+                                data-box-id={box.id}
+                            >
+                                <BlockGfx type='box'></BlockGfx>
+                            </div>
+                        )),
+                    [boxesInitialData]
+                )}
+            </div>
         </div>
     );
 };

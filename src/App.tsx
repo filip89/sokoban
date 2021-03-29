@@ -19,9 +19,7 @@ const defaultMapTemplate: string[][] = [
 function App() {
     const [mapTempate] = useState<MapTemplate>(defaultMapTemplate);
 
-    return (
-        <Game mapTemplate={mapTempate}></Game>
-    );
+    return <Game mapTemplate={mapTempate}></Game>;
 }
 
 export default App;

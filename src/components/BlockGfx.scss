@@ -1,0 +1,36 @@
+@import '../styles/global';
+
+.block {
+    @mixin blockColor($color) {
+        .block__top {
+            background-color: $color;
+        }
+        .block__bottom {
+            background-color: darken($color, 15%);
+        }
+    }
+    @include fieldSquare;
+    position: absolute;
+    display: inline-block;
+    $height: calc(#{$field-size} / 2);
+    &__top {
+        @include fieldSquare;
+        position: absolute;
+        bottom: $height;
+    }
+    &__bottom {
+        position: absolute;
+        bottom: 0;
+        width: $field-size;
+        height: $height;
+    }
+    &--box {
+        @include blockColor(rgb(206, 144, 90));
+    }
+    &--obstacle {
+        @include blockColor(darken($ground-color, 30%));
+    }
+    &--player {
+        @include blockColor(rgb(12, 0, 182));
+    }
+}
