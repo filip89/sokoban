@@ -19,18 +19,21 @@ export function getPlayerPosition(mapTemplate: MapTemplate): Position {
     return position;
 }
 
-export function getBoxes(mapTemplate: MapTemplate): Box[] {
-    return mapTemplate.reduce<Box[]>((boxes, row, rowIndex) => {
+function getEntities<T>(mapTemplate: MapTemplate, entitySign: string, entityCreator: (position: Position) => T): T[] {
+    return mapTemplate.reduce<T[]>((items, row, rowIndex) => {
         row.forEach((field, columnIndex) => {
-            if (field === 'b') {
-                boxes.push(
-                    new Box({
-                        row: rowIndex,
-                        column: columnIndex,
-                    })
-                );
+            if (field === entitySign) {
+                items.push(entityCreator({ row: rowIndex, column: columnIndex }));
             }
         });
-        return boxes;
+        return items;
     }, []);
+}
+
+export function getBoxes(mapTemplate: MapTemplate): Box[] {
+    return getEntities<Box>(mapTemplate, 'b', (position: Position) => new Box(position));
+}
+
+export function getDestinations(mapTemplate: MapTemplate): Position[] {
+    return getEntities<Position>(mapTemplate, 'd', (position: Position) => position);
 }

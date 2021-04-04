@@ -1,18 +1,44 @@
 @import '../styles/global';
 
 .game-wrapper {
-    // perspective: 500px;
+    display: flex;
+    justify-content: center;
+    padding-top: 100px;
 }
 
+.game-status {
+    display: flex;
+    justify-content: space-between;
+}
+
+.reset-btn {
+    $color: rgb(239, 239, 239);
+    $size: 24px;
+    width: $size;
+    height: $size;
+    border: 0;
+    padding: 0;
+    outline: none;
+    cursor: pointer;
+    background-color: $color;
+
+    &:hover {
+        background-color: darken($color, 10%);
+    }
+}
+
+// TODO add perspective?
 .game {
     position: relative;
     display: table;
-    margin: 150px auto;
-    // transform: rotateX(10deg);
 }
 
 .movable-wrapper {
     position: absolute;
     display: inline-block;
     transition: 0.25s left linear, 0.25s top linear;
+
+    &--no-transition {
+        transition: none;
+    }
 }

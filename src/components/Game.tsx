@@ -1,28 +1,43 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import useInput from '../hooks/useInput';
 import useLoop from '../hooks/useLoop';
 import Box from '../models/Box';
 import { Position } from '../models/Position';
-import * as positionScanner from '../services/MapTemplateEntities';
+import * as mapScanner from '../services/MapTemplateScanner';
 import { getMovementFromInputKey } from '../services/InputService';
 import './Game.scss';
 import Map, { MapTemplate } from './Map';
 import BlockGfx from './BlockGfx';
+import { BiReset } from 'react-icons/bi';
 
 export interface GameProps {
     mapTemplate: MapTemplate;
 }
 
 const Game: React.FC<GameProps> = ({ mapTemplate }) => {
-    const [playerPosition, setPlayerPosition] = useState<Position>(positionScanner.getPlayerPosition(mapTemplate));
+    const [playerPosition, setPlayerPosition] = useState<Position>(mapScanner.getPlayerPosition(mapTemplate));
     const playerRef = useRef<HTMLDivElement>(null);
     const boxesInitialData: Box[] = useMemo<Box[]>(() => {
-        return positionScanner.getBoxes(mapTemplate);
+        return mapScanner.getBoxes(mapTemplate);
     }, [mapTemplate]);
     const [boxesState, setBoxesState] = useState<Box[]>(boxesInitialData);
-    const boxesRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const boxesRefs = useRef<HTMLDivElement[]>([]);
+    const destinations: Position[] = useMemo<Position[]>(() => {
+        return mapScanner.getDestinations(mapTemplate);
+    }, [mapTemplate]);
     const [isAnimating, setIsAnimating] = useState(false);
     const [currentInput, keyDownHandler, keyUpHandler] = useInput();
+    const [completed, setCompleted] = useState<boolean>(false);
+
+    const boxesLeft: number = useMemo(() => {
+        return boxesState.reduce<number>((count, box) => {
+            let boxAtDestination: boolean = !!destinations.find((destination) => {
+                return destination.row === box.position.row && destination.column === box.position.column;
+            });
+            if (!boxAtDestination) count++;
+            return count;
+        }, 0);
+    }, [boxesState, destinations]);
 
     useLoop(tryToMove, 10);
 
@@ -36,7 +51,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
             if (boxElem) {
                 let position: Position = box.position;
                 updateElementPosition(boxElem, position);
-                boxElem.style.zIndex = '' + position.row;
+                boxElem.style.zIndex = position.row.toString();
             }
         });
     }, [boxesState]);
@@ -56,13 +71,27 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         elem.style.top = `${position.row * 40}px`;
     }
 
-    useEffect(() => {
-        setPlayerPosition(positionScanner.getPlayerPosition(mapTemplate));
-        setBoxesState(positionScanner.getBoxes(mapTemplate));
+    const reset = useCallback(() => {
+        playerRef.current && disableElemAnimationForTick(playerRef.current);
+        boxesRefs.current.forEach((boxElem) => disableElemAnimationForTick(boxElem));
+        setPlayerPosition(mapScanner.getPlayerPosition(mapTemplate));
+        setBoxesState(mapScanner.getBoxes(mapTemplate));
+        setCompleted(false);
     }, [mapTemplate]);
 
+    useEffect(() => {
+        reset();
+    }, [reset]);
+
+    function disableElemAnimationForTick(elem: HTMLDivElement): void {
+        elem?.classList.add('movable-wrapper--no-transition');
+        setTimeout(() => {
+            elem?.classList.remove('movable-wrapper--no-transition');
+        });
+    }
+
     function tryToMove(): void {
-        if (isAnimating || !currentInput) return;
+        if (isAnimating || !currentInput || completed) return;
         const movement: Position = getMovementFromInputKey(currentInput);
         const targetPosition: Position = getPositionByMovement(playerPosition, movement);
         if (!positionIsTraversable(mapTemplate, targetPosition)) return;
@@ -119,35 +148,55 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
 
     function handleTransitionEnd(): void {
         setIsAnimating(false);
+        setIfCompleted();
     }
+
+    function setIfCompleted(): void {
+        let undeliveredBox: Box | undefined = boxesState.find((box) => {
+            let notDelivered: boolean = !destinations.find((destination) => {
+                return destination.row === box.position.row && destination.column === box.position.column;
+            });
+            return notDelivered;
+        });
+
+        if (!undeliveredBox) {
+            setCompleted(true);
+        }
+    }
+
+    const playerElement: JSX.Element = (
+        <div
+            ref={playerRef}
+            className="movable-wrapper"
+            onTransitionEnd={handleTransitionEnd}
+            style={{ zIndex: playerPosition.row }}
+        >
+            <BlockGfx type="player"></BlockGfx>
+        </div>
+    );
+
+    const boxesElements: JSX.Element[] = useMemo<JSX.Element[]>(() => {
+        return boxesInitialData.map((box) => (
+            <div className="movable-wrapper" ref={registerBoxRef} key={box.id} data-box-id={box.id}>
+                <BlockGfx type="box"></BlockGfx>
+            </div>
+        ));
+    }, [boxesInitialData]);
 
     return (
         <div className="game-wrapper">
-            <div tabIndex={-1} className="game" onKeyDown={keyDownHandler} onKeyUp={keyUpHandler}>
-                <Map template={mapTemplate}></Map>
-                <div
-                    ref={playerRef}
-                    className="movable-wrapper"
-                    onTransitionEnd={handleTransitionEnd}
-                    style={{ zIndex: playerPosition.row }}
-                >
-                    <BlockGfx type='player'></BlockGfx>
+            <div>
+                <div className="game-status">
+                    <div>Boxes left: {boxesLeft}</div>
+                    <button className="reset-btn" onClick={reset}>
+                        <BiReset size="22" />
+                    </button>
                 </div>
-                {useMemo(
-                    () =>
-                        boxesInitialData.map((box) => (
-                            <div
-                                className="movable-wrapper"
-                                ref={registerBoxRef}
-                                onTransitionEnd={handleTransitionEnd}
-                                key={box.id}
-                                data-box-id={box.id}
-                            >
-                                <BlockGfx type='box'></BlockGfx>
-                            </div>
-                        )),
-                    [boxesInitialData]
-                )}
+                <div tabIndex={-1} className="game" onKeyDown={keyDownHandler} onKeyUp={keyUpHandler}>
+                    <Map template={mapTemplate}></Map>
+                    {playerElement}
+                    {boxesElements}
+                </div>
             </div>
         </div>
     );
