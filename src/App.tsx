@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import './App.scss';
 import Game from './components/Game';
-import { MapTemplate } from './components/Map';
+import { MapFieldSign, MapTemplate } from './models/MapTemplate';
 
-const defaultMapTemplate: string[][] = [
+const defaultMapTemplate: MapFieldSign[][] = [
     ['g', 'g', 'g', 'g', 'o', 'g', 'g', 'g'],
     ['g', 'g', 'g', 'g', 'o', 'g', 'g', 'g'],
     ['g', 'g', 'g', 'g', 'o', 'g', 'g', 'g'],

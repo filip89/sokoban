@@ -1,39 +1,45 @@
-import { MapTemplate } from '../components/Map';
-import Box from '../models/Box';
-import { Position } from '../models/Position';
 
-export function getPlayerPosition(mapTemplate: MapTemplate): Position {
-    let position: Position = {
-        row: 0,
-        column: 0,
+import Box from '../models/Box';
+import { Coordinates } from '../models/Coordinates';
+import { Field } from '../models/Field';
+import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
+
+export function getPlayerLocation(mapTemplate: MapTemplate): Field {
+    let coordinates: Coordinates = {
+        y: 0,
+        x: 0,
     };
-    let lastRowIndex = mapTemplate.length;
-    for (let rowIndex = 0; rowIndex <= lastRowIndex; rowIndex++) {
-        let c = mapTemplate[rowIndex].findIndex((field) => field === 'p');
-        if (~c) {
-            position.row = rowIndex;
-            position.column = c;
+    let lastYValue: number = mapTemplate.length;
+    for (let y = 0; y <= lastYValue; y++) {
+        let x: number = mapTemplate[y].findIndex((field) => field === 'p');
+        if (~x) {
+            coordinates.y = y;
+            coordinates.x = x;
             break;
         }
     }
-    return position;
+    return new Field(coordinates);
 }
 
-function getEntities<T>(mapTemplate: MapTemplate, entitySign: string, entityCreator: (position: Position) => T): T[] {
-    return mapTemplate.reduce<T[]>((items, row, rowIndex) => {
-        row.forEach((field, columnIndex) => {
-            if (field === entitySign) {
-                items.push(entityCreator({ row: rowIndex, column: columnIndex }));
-            }
+function getFieldsOfSign(mapTemplate: MapTemplate, targetSign: MapFieldSign): Field[] {
+    return mapTemplate.reduce<Field[]>((items, row, y) => {
+        row.forEach((fieldSign, x) => {
+            if (fieldSign === targetSign) items.push(new Field({ y: y, x: x }));
         });
         return items;
     }, []);
 }
 
 export function getBoxes(mapTemplate: MapTemplate): Box[] {
-    return getEntities<Box>(mapTemplate, 'b', (position: Position) => new Box(position));
+    return getFieldsOfSign(mapTemplate, 'b').map((field) => new Box(field));
 }
 
-export function getDestinations(mapTemplate: MapTemplate): Position[] {
-    return getEntities<Position>(mapTemplate, 'd', (position: Position) => position);
+export function getDestinationLocations(mapTemplate: MapTemplate): Field[] {
+    return getFieldsOfSign(mapTemplate, 'd');
+}
+
+export function isTraversable(mapTemplate: MapTemplate, coordinates: Coordinates): boolean {
+    let desiredRow: MapFieldSign[] = mapTemplate[coordinates.y];
+    let fieldCharacter: MapFieldSign | undefined = desiredRow && desiredRow[coordinates.x];
+    return !!fieldCharacter && ['g', 'd', 'b', 'p'].includes(fieldCharacter);
 }

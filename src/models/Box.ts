@@ -1,11 +1,11 @@
-import { Position } from "./Position";
+import { Field } from './Field';
 
 export default class Box {
     id: string;
-    position: Position;
+    location: Field;
 
-    constructor(position: Position) {
-        this.id = `${position.row}${position.column}`;
-        this.position = position;
+    constructor(field: Field) {
+        this.id = field.id;
+        this.location = field;
     }
 }

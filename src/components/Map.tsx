@@ -1,8 +1,9 @@
 import React, { CSSProperties } from 'react';
+import { MapTemplate } from '../models/MapTemplate';
 import BlockGfx from './BlockGfx';
 import './Map.scss';
 
-export type MapTemplate = string[][];
+
 
 export interface MapProps {
     template: MapTemplate;

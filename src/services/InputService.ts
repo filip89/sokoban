@@ -1,23 +1,23 @@
-import { Position } from "../models/Position";
+import { Coordinates } from "../models/Coordinates";
 
-export function getMovementFromInputKey(inputKey: string): Position {
-    const movement: Position = {
-        row: 0,
-        column: 0,
+export function getDirectionFromInputKey(inputKey: string): Coordinates {
+    const direction: Coordinates = {
+        y: 0,
+        x: 0,
     };
     switch (inputKey) {
         case 'ArrowRight':
-            movement.column++;
+            direction.x++;
             break;
         case 'ArrowLeft':
-            movement.column--;
+            direction.x--;
             break;
         case 'ArrowUp':
-            movement.row--;
+            direction.y--;
             break;
         case 'ArrowDown':
-            movement.row++;
+            direction.y++;
             break;
     }
-    return movement;
+    return direction;
 }
