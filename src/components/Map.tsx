@@ -1,34 +1,25 @@
 import React, { CSSProperties } from 'react';
-import { MapTemplate } from '../models/MapTemplate';
+import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
 import BlockGfx from './BlockGfx';
 import './Map.scss';
-
-
+import TileGfx from './TileGfx';
 
 export interface MapProps {
     template: MapTemplate;
 }
 
 const Map: React.FC<MapProps> = React.memo(({ template }) => {
-    function getFieldClassName(field: string): string {
-        let className: string = 'field';
-        switch (field) {
-            case 'g':
-            case 'p':
-            case 'b':
-                className += ' field--ground';
-                break;
-            case 'd':
-                className += ' field--destination';
-                break;
-        }
-        return className;
-    }
-
-    function getZIndexStyle(field: string, row: number): CSSProperties {
+    function getSlotInlineZIndex(field: MapFieldSign, row: number): CSSProperties {
         return {
             zIndex: field === 'o' ? row : 0,
         };
+    }
+
+    function getFieldGfx(sign: MapFieldSign) {
+        if (sign === 'e') return;
+        if (sign === 'o') return <BlockGfx type="obstacle"></BlockGfx>;
+        if (sign === 'd') return <TileGfx type="destination"></TileGfx>;
+        return <TileGfx type="ground"></TileGfx>;
     }
 
     return (
@@ -36,13 +27,8 @@ const Map: React.FC<MapProps> = React.memo(({ template }) => {
             {template.map((row, rowIndex) => (
                 <div key={rowIndex} className="map__row">
                     {row.map((field, columnIndex) => (
-                        <div
-                            className={getFieldClassName(field)}
-                            key={columnIndex}
-                            style={getZIndexStyle(field, rowIndex)}
-                        >
-                            {field === 'o' && <BlockGfx type="obstacle"></BlockGfx>}
-                            {field === 'd' && <div className="field__inner-square"></div>}
+                        <div className="map__field-slot" key={columnIndex} style={getSlotInlineZIndex(field, rowIndex)}>
+                            {getFieldGfx(field)}
                         </div>
                     ))}
                 </div>

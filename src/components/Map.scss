@@ -4,29 +4,8 @@
     &__row {
         display: flex;
     }
-}
 
-.field {
-    @mixin fieldColor($color) {
-        background-color: $color;
-        border: solid darken($color, 10%) 1px;
-    }
-    $destination-color: rgb(185, 226, 144);
-    @include fieldSquare;
-    position: relative;
-    &--ground {
-        @include fieldColor($ground-color);
-    }
-    &--destination {
-        $color: $destination-color;
-        @include fieldColor($destination-color);
-    }
-    .field__inner-square {
-        border: 2px dashed darken($destination-color, 20%);
-        position: absolute;
-        top: 10%;
-        right: 10%;
-        bottom: 10%;
-        left: 10%;
+    &__field-slot {
+        @include fieldSquare;
     }
 }

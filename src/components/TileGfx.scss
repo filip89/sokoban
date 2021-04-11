@@ -1,0 +1,31 @@
+@import '../styles/global';
+
+@mixin tileColor($color) {
+    background-color: $color;
+    border: solid darken($color, 10%) 1px;
+}
+
+.tile {
+    @include fieldSquare;
+    display: inline-block;
+    position: relative;
+
+    &--ground {
+        @include tileColor($ground-color);
+    }
+
+    $destination-color: rgb(185, 226, 144);
+
+    &--destination {
+        @include tileColor($destination-color);
+    }
+    .tile__inner-square {
+        border: 2px dashed darken($destination-color, 20%);
+        position: absolute;
+        $parent-padding: 10%;
+        top: $parent-padding;
+        right: $parent-padding;
+        bottom: $parent-padding;
+        left: $parent-padding;
+    }
+}

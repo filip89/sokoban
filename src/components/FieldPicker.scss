@@ -1,0 +1,21 @@
+@import '../styles/global';
+
+.field-picker {
+    display: flex;
+    flex-direction: column;
+    &__field {
+        @extend .plain-button;
+        @include fieldSquare;
+        $color: rgb(240, 240, 240);
+        background-color: $color;
+        cursor: pointer;
+
+        &:hover {
+            background-color: darken($color, 10%);
+        }
+
+        &--active {
+            background-color: darken($color, 10%);
+        }
+    }
+}

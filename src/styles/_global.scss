@@ -5,3 +5,9 @@ $field-size: 40px;
     width: $field-size;
     height: $field-size;
 }
+
+.plain-button {
+    border: 0;
+    padding: 0;
+    outline: none;
+}

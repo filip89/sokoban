@@ -12,13 +12,11 @@
 }
 
 .reset-btn {
+    @extend .plain-button;
     $color: rgb(239, 239, 239);
     $size: 24px;
     width: $size;
     height: $size;
-    border: 0;
-    padding: 0;
-    outline: none;
     cursor: pointer;
     background-color: $color;
 
