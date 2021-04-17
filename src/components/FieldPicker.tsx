@@ -1,7 +1,10 @@
 import { MapFieldSign } from '../models/MapTemplate';
+import BlockGfx from './BlockGfx';
 import './FieldPicker.scss';
+import TileGfx from './TileGfx';
+import { FaEraser } from 'react-icons/fa';
 
-const fieldSigns: MapFieldSign[] = ['b', 'd', 'e', 'g', 'o', 'p'];
+const fieldSigns: MapFieldSign[] = ['e', 'g', 'o', 'd', 'b', 'p'];
 
 export interface FieldPickerProps {
     selectedSign?: MapFieldSign;
@@ -15,12 +18,21 @@ const FieldPicker: React.FC<FieldPickerProps> = ({ selectedSign, onPick }) => {
         return className;
     }
 
+    function getFieldGfx(sign: MapFieldSign) {
+        if (sign === 'e') return <FaEraser></FaEraser>;
+        if (sign === 'o') return <BlockGfx type="obstacle"></BlockGfx>;
+        if (sign === 'd') return <TileGfx type="destination"></TileGfx>;
+        if (sign === 'b') return <BlockGfx type="box"></BlockGfx>;
+        if (sign === 'p') return <BlockGfx type="player"></BlockGfx>;
+        if (sign === 'g') return <TileGfx type="ground"></TileGfx>;
+    }
+
     return (
         <div className="field-picker">
             {fieldSigns.map((fieldSign) => (
-                <button className={getFieldClassName(fieldSign)} key={fieldSign} onClick={() => onPick(fieldSign)}>
-                    {fieldSign}
-                </button>
+                <div className={getFieldClassName(fieldSign)} key={fieldSign} onClick={() => onPick(fieldSign)}>
+                    {getFieldGfx(fieldSign)}
+                </div>
             ))}
         </div>
     );

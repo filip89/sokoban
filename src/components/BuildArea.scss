@@ -1,0 +1,21 @@
+@import '../styles/global';
+
+.build-area {
+    flex-shrink: 0;
+    $bckColor: rgb(240, 240, 240);
+    background-color: $bckColor;
+
+    &__row {
+        display: flex;
+    }
+
+    &__field-slot {
+        @include fieldSquare;
+        outline: 1px solid darken($bckColor, 10%);
+        cursor: pointer;
+
+        > * {
+            pointer-events: none;
+        }
+    }
+}

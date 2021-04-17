@@ -1,21 +1,32 @@
-@import '../styles/global';
-
 .field-picker {
     display: flex;
     flex-direction: column;
+    padding: 20px;
+
     &__field {
-        @extend .plain-button;
-        @include fieldSquare;
-        $color: rgb(240, 240, 240);
-        background-color: $color;
+        $size: 60px;
+        $select-color: gold;
+        height: $size;
+        width: $size;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(240, 240, 240);
+        color: black;
         cursor: pointer;
 
         &:hover {
-            background-color: darken($color, 10%);
+            background-color: lighten($select-color, 30%);
         }
 
         &--active {
-            background-color: darken($color, 10%);
+            background-color: $select-color;
+
+            &:hover {
+                background-color: $select-color;
+            }
         }
     }
 }

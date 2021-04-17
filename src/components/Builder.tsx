@@ -1,9 +1,9 @@
 import { useState } from 'react';
+import { Coordinates } from '../models/Coordinates';
 import { MapFieldSign } from '../models/MapTemplate';
-import BlockGfx from './BlockGfx';
+import BuildArea from './BuildArea';
 import './Builder.scss';
 import FieldPicker from './FieldPicker';
-import TileGfx from './TileGfx';
 
 const mapHeight: number = 15;
 const mapWidth: number = 30;
@@ -28,42 +28,31 @@ const Builder: React.FC<BulderProps> = () => {
         selectedSign === sign ? setSelectedSign(undefined) : setSelectedSign(sign);
     }
 
-    function handleFieldPlant(row: number, column: number): void {
-        if (!selectedSign) return;
+    function updateMapTemplate(sign: MapFieldSign, coordinates: Coordinates): void {
         let mapTemplateCopy: MapFieldSign[][] = [...mapTemplate];
-        let rowArrayCopy: MapFieldSign[] = [...mapTemplateCopy[row]];
-        rowArrayCopy[column] = selectedSign;
-        mapTemplateCopy[row] = rowArrayCopy;
+        let rowArrayCopy: MapFieldSign[] = [...mapTemplateCopy[coordinates.y]];
+        rowArrayCopy[coordinates.x] = sign;
+        mapTemplateCopy[coordinates.y] = rowArrayCopy;
         setMapTemplate(mapTemplateCopy);
     }
 
-    function getFieldGfx(sign: MapFieldSign) {
-        if (sign === 'e') return;
-        if (sign === 'o') return <BlockGfx type="obstacle"></BlockGfx>;
-        if (sign === 'd') return <TileGfx type="destination"></TileGfx>;
-        if (sign === 'b') return <BlockGfx type="box"></BlockGfx>;
-        if (sign === 'p') return <BlockGfx type="player"></BlockGfx>;
-        if (sign === 'g') return <TileGfx type="ground"></TileGfx>;
+    function tryToPlaceField(coordinates: Coordinates): void {
+        if (!selectedSign) return;
+        updateMapTemplate(selectedSign, coordinates);
+    }
+
+    function eraseField(coordinates: Coordinates): void {
+        updateMapTemplate('e', coordinates);
     }
 
     return (
         <div className="builder">
-            <FieldPicker onPick={handleFieldPick} selectedSign={selectedSign}></FieldPicker>
-            <div className="build-area">
-                {mapTemplate.map((row, rowIndex) => (
-                    <div className="build-area__row" key={rowIndex}>
-                        {row.map((fieldSign, columnIndex) => (
-                            <div
-                                className="build-area__field-slot"
-                                key={columnIndex}
-                                onClick={() => handleFieldPlant(rowIndex, columnIndex)}
-                            >
-                                {getFieldGfx(fieldSign)}
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
+            <FieldPicker selectedSign={selectedSign} onPick={handleFieldPick}></FieldPicker>
+            <BuildArea
+                mapTemplate={mapTemplate}
+                onFieldLeftClick={tryToPlaceField}
+                onFieldRightClick={eraseField}
+            ></BuildArea>
         </div>
     );
 };
