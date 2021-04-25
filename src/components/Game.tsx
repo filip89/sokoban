@@ -19,14 +19,12 @@ export interface GameProps {
 const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     const [playerLocation, setPlayerLocation] = useState<Field>(mapScanner.getPlayerLocation(mapTemplate));
     const playerRef = useRef<HTMLDivElement>(null);
-    const boxesInitialData: Box[] = useMemo<Box[]>(() => {
-        return mapScanner.getBoxes(mapTemplate);
-    }, [mapTemplate]);
+    const boxesInitialData: Box[] = useMemo<Box[]>(() => mapScanner.getBoxes(mapTemplate), [mapTemplate]);
     const [boxesState, setBoxesState] = useState<Box[]>(boxesInitialData);
     const boxesRefs = useRef<HTMLDivElement[]>([]);
-    const destinationLocations: Field[] = useMemo<Field[]>(() => {
-        return mapScanner.getDestinationLocations(mapTemplate);
-    }, [mapTemplate]);
+    const destinationLocations: Field[] = useMemo<Field[]>(() => mapScanner.getDestinationLocations(mapTemplate), [
+        mapTemplate,
+    ]);
     const [currentInput, keyDownHandler, keyUpHandler] = useInput();
     const [isAnimating, setIsAnimating] = useState(false);
     const [completed, setCompleted] = useState<boolean>(false);
@@ -58,9 +56,9 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         });
     }, [boxesState]);
 
-    function registerBoxRef(elem: HTMLDivElement): void {
-        boxesRefs.current.push(elem);
-    }
+    useEffect(() => {
+        boxesRefs.current = boxesRefs.current.slice(0, boxesInitialData.length);
+    }, [boxesInitialData]);
 
     function getBoxElement(boxId: string): HTMLDivElement | null | undefined {
         return boxesRefs.current.find((boxElem) => {
@@ -81,9 +79,9 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         setCompleted(false);
     }, [mapTemplate]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         reset();
-    }, [reset]);
+    }, [mapTemplate, reset]);
 
     function disableElementAnimationForTick(elem: HTMLDivElement): void {
         elem?.classList.add('movable-wrapper--no-transition');
@@ -155,9 +153,20 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         </div>
     );
 
+    function registerBoxRef(element: HTMLDivElement | null, index: number): void {
+        if (element) {
+            boxesRefs.current[index] = element;
+        }
+    }
+
     const boxesElements: JSX.Element[] = useMemo<JSX.Element[]>(() => {
-        return boxesInitialData.map((box) => (
-            <div className="movable-wrapper" ref={registerBoxRef} key={box.id} data-box-id={box.id}>
+        return boxesInitialData.map((box, index) => (
+            <div
+                className="movable-wrapper"
+                ref={(element) => registerBoxRef(element, index)}
+                key={box.id}
+                data-box-id={box.id}
+            >
                 <BlockGfx type="box"></BlockGfx>
             </div>
         ));

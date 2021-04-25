@@ -1,25 +1,41 @@
 import { useState } from 'react';
 import './App.scss';
+import Builder from './components/Builder';
 import Game from './components/Game';
-import { MapFieldSign, MapTemplate } from './models/MapTemplate';
+import { defaultMaps } from './data/defaultMaps';
+import TopMenu from './components/TopMenu';
+import { Map } from './models/Map';
 
-const defaultMapTemplate: MapFieldSign[][] = [
-    ['e', 'e', 'e', 'g', 'o', 'g', 'g', 'g'],
-    ['e', 'e', 'e', 'g', 'o', 'g', 'g', 'g'],
-    ['e', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['e', 'e', 'g', 'g', 'o', 'g', 'o', 'o'],
-    ['g', 'g', 'g', 'g', 'g', 'b', 'g', 'd'],
-    ['g', 'p', 'g', 'b', 'g', 'g', 'g', 'd'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'e', 'g', 'g', 'g', 'g', 'g'],
-    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-];
+type Mode = 'play' | 'build';
 
 function App() {
-    const [mapTempate] = useState<MapTemplate>(defaultMapTemplate);
+    const [maps] = useState<Map[]>(defaultMaps);
+    const [mode, setMode] = useState<Mode>('play');
+    const [activeMap, setActiveMap] = useState<Map>(defaultMaps[0]);
 
-    return <Game mapTemplate={mapTempate}></Game>;
+    function isPlayMode(): boolean {
+        return mode === 'play';
+    }
+
+    function handleToggleMode(): void {
+        setMode(isPlayMode() ? 'build' : 'play');
+    }
+
+    function handleMapSelect(map: Map): void {
+        setActiveMap(map);
+    }
+
+    return (
+        <>
+            <TopMenu
+                maps={maps}
+                selectedMapId={activeMap.id}
+                onToggleMode={handleToggleMode}
+                onMapSelect={handleMapSelect}
+            ></TopMenu>
+            {isPlayMode() ? activeMap && <Game mapTemplate={activeMap.template}></Game> : <Builder></Builder>}
+        </>
+    );
 }
 
 export default App;

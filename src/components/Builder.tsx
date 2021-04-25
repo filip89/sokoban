@@ -1,27 +1,15 @@
 import { useState } from 'react';
 import { Coordinates } from '../models/Coordinates';
-import { MapFieldSign } from '../models/MapTemplate';
+import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
+import { generateEmptyMapTemplate } from '../services/generateEmptyMapTemplate';
 import BuildArea from './BuildArea';
 import './Builder.scss';
 import FieldPicker from './FieldPicker';
 
-const mapHeight: number = 15;
-const mapWidth: number = 30;
-
-function generateEmptyMap(): 'e'[][] {
-    let map: 'e'[][] = [];
-    for (let row = 1; row <= mapHeight; row++) {
-        let row: 'e'[] = [];
-        for (let column = 1; column <= mapWidth; column++) row.push('e');
-        map.push(row);
-    }
-    return map;
-}
-
 export interface BulderProps {}
 
 const Builder: React.FC<BulderProps> = () => {
-    const [mapTemplate, setMapTemplate] = useState<MapFieldSign[][]>(generateEmptyMap());
+    const [mapTemplate, setMapTemplate] = useState<MapTemplate>(generateEmptyMapTemplate());
     const [selectedSign, setSelectedSign] = useState<MapFieldSign>();
 
     function handleFieldPick(sign: MapFieldSign): void {
@@ -29,10 +17,10 @@ const Builder: React.FC<BulderProps> = () => {
     }
 
     function updateMapTemplate(sign: MapFieldSign, coordinates: Coordinates): void {
-        let mapTemplateCopy: MapFieldSign[][] = [...mapTemplate];
-        let rowArrayCopy: MapFieldSign[] = [...mapTemplateCopy[coordinates.y]];
-        rowArrayCopy[coordinates.x] = sign;
-        mapTemplateCopy[coordinates.y] = rowArrayCopy;
+        let mapTemplateCopy: MapTemplate = [...mapTemplate];
+        let templateRow: MapFieldSign[] = [...mapTemplateCopy[coordinates.y]];
+        templateRow[coordinates.x] = sign;
+        mapTemplateCopy[coordinates.y] = templateRow;
         setMapTemplate(mapTemplateCopy);
     }
 
