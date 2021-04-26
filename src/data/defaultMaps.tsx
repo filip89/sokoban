@@ -15,6 +15,7 @@ export const defaultMaps: Map[] = [
             ['g', 'g', 'e', 'g', 'g', 'g', 'g', 'g'],
             ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
         ],
+        isDefault: true
     },
     {
         id: '2',
@@ -30,5 +31,6 @@ export const defaultMaps: Map[] = [
             ['g', 'g', 'e', 'b', 'g', 'g', 'g', 'g'],
             ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
         ],
+        isDefault: true
     },
 ];

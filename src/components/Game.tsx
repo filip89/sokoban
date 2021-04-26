@@ -17,7 +17,7 @@ export interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ mapTemplate }) => {
-    const [playerLocation, setPlayerLocation] = useState<Field>(mapScanner.getPlayerLocation(mapTemplate));
+    const [playerField, setPlayerField] = useState<Field>(mapScanner.getPlayerField(mapTemplate));
     const playerRef = useRef<HTMLDivElement>(null);
     const boxesInitialData: Box[] = useMemo<Box[]>(() => mapScanner.getBoxes(mapTemplate), [mapTemplate]);
     const [boxesState, setBoxesState] = useState<Box[]>(boxesInitialData);
@@ -42,8 +42,8 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     useLoop(tryToMove, 10);
 
     useLayoutEffect(() => {
-        updateElementPosition(playerRef.current!, playerLocation.coordinates);
-    }, [playerLocation]);
+        updateElementPosition(playerRef.current!, playerField.coordinates);
+    }, [playerField]);
 
     useLayoutEffect(() => {
         boxesState.forEach((box) => {
@@ -74,7 +74,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     const reset = useCallback(() => {
         playerRef.current && disableElementAnimationForTick(playerRef.current);
         boxesRefs.current.forEach((boxElem) => disableElementAnimationForTick(boxElem));
-        setPlayerLocation(mapScanner.getPlayerLocation(mapTemplate));
+        setPlayerField(mapScanner.getPlayerField(mapTemplate));
         setBoxesState(mapScanner.getBoxes(mapTemplate));
         setCompleted(false);
     }, [mapTemplate]);
@@ -93,12 +93,12 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     function tryToMove(): void {
         if (isAnimating || !currentInput || completed) return;
         const direction: Coordinates = getDirectionFromInputKey(currentInput);
-        const targetField: Field = playerLocation.getAdjacentField(direction);
+        const targetField: Field = playerField.getAdjacentField(direction);
         if (!mapScanner.isTraversable(mapTemplate, targetField.coordinates)) return;
         const boxInWay: Box | undefined = getBoxAtField(targetField);
         let playerCanMove: boolean = !boxInWay || tryToMoveBox(boxInWay, direction);
         if (playerCanMove) {
-            setPlayerLocation(targetField);
+            setPlayerField(targetField);
             setIsAnimating(true);
         }
     }
@@ -147,7 +147,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
             ref={playerRef}
             className="movable-wrapper"
             onTransitionEnd={handleTransitionEnd}
-            style={{ zIndex: playerLocation.coordinates.y }}
+            style={{ zIndex: playerField.coordinates.y }}
         >
             <BlockGfx type="player"></BlockGfx>
         </div>

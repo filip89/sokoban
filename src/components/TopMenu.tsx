@@ -1,22 +1,36 @@
+import './TopMenu.scss';
 import { Map } from '../models/Map';
 
 export interface TopMenuProps {
+    isEditMode: boolean;
     maps: Map[];
-    selectedMapId: string;
+    selectedMapId?: string;
     onToggleMode: () => void;
     onMapSelect: (map: Map) => void;
+    onMapAdd: () => void;
+    onMapDelete: (mapId: string) => void;
 }
 
-const TopMenu: React.FC<TopMenuProps> = ({ maps, selectedMapId, onMapSelect, onToggleMode }) => {
-
+const TopMenu: React.FC<TopMenuProps> = ({
+    isEditMode,
+    maps,
+    selectedMapId,
+    onMapSelect,
+    onToggleMode,
+    onMapAdd,
+    onMapDelete,
+}) => {
     return (
-        <div>
+        <div className="top-menu">
             <button onClick={onToggleMode}>Toggle mode</button>
             {maps.map((map) => (
-                <button key={map.id} onClick={() => onMapSelect(map)}>
+                <div key={map.id}>
                     {map.id}
-                </button>
+                    <button onClick={() => onMapSelect(map)}>S</button>
+                    {isEditMode && <button onClick={() => onMapDelete(map.id)}>D</button>}
+                </div>
             ))}
+            {isEditMode && <button onClick={onMapAdd}>ADD</button>}
         </div>
     );
 };

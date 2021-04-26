@@ -1,16 +1,15 @@
-
 import Box from '../models/Box';
 import { Coordinates } from '../models/Coordinates';
 import { Field } from '../models/Field';
 import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
 
-export function getPlayerLocation(mapTemplate: MapTemplate): Field {
+export function getPlayerField(mapTemplate: MapTemplate): Field {
     let coordinates: Coordinates = {
         y: 0,
         x: 0,
     };
     let lastYValue: number = mapTemplate.length;
-    for (let y = 0; y <= lastYValue; y++) {
+    for (let y = 0; y < lastYValue; y++) {
         let x: number = mapTemplate[y].findIndex((field) => field === 'p');
         if (~x) {
             coordinates.y = y;

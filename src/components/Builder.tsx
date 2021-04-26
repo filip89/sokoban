@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Coordinates } from '../models/Coordinates';
 import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
 import { generateEmptyMapTemplate } from '../services/generateEmptyMapTemplate';
@@ -6,22 +6,29 @@ import BuildArea from './BuildArea';
 import './Builder.scss';
 import FieldPicker from './FieldPicker';
 
-export interface BulderProps {}
+export interface BuilderProps {
+    mapTemplateToEdit: MapTemplate;
+    onSave: (draft: MapTemplate) => void
+}
 
-const Builder: React.FC<BulderProps> = () => {
-    const [mapTemplate, setMapTemplate] = useState<MapTemplate>(generateEmptyMapTemplate());
+const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave}) => {
+    const [mapTemplateDraft, setMapTemplateDraft] = useState<MapTemplate>([]);
     const [selectedSign, setSelectedSign] = useState<MapFieldSign>();
+
+    useEffect(() => {
+        setMapTemplateDraft(mapTemplateToEdit);
+    }, [mapTemplateToEdit]);
 
     function handleFieldPick(sign: MapFieldSign): void {
         selectedSign === sign ? setSelectedSign(undefined) : setSelectedSign(sign);
     }
 
     function updateMapTemplate(sign: MapFieldSign, coordinates: Coordinates): void {
-        let mapTemplateCopy: MapTemplate = [...mapTemplate];
+        let mapTemplateCopy: MapTemplate = [...mapTemplateDraft];
         let templateRow: MapFieldSign[] = [...mapTemplateCopy[coordinates.y]];
         templateRow[coordinates.x] = sign;
         mapTemplateCopy[coordinates.y] = templateRow;
-        setMapTemplate(mapTemplateCopy);
+        setMapTemplateDraft(mapTemplateCopy);
     }
 
     function tryToPlaceField(coordinates: Coordinates): void {
@@ -36,11 +43,17 @@ const Builder: React.FC<BulderProps> = () => {
     return (
         <div className="builder">
             <FieldPicker selectedSign={selectedSign} onPick={handleFieldPick}></FieldPicker>
-            <BuildArea
-                mapTemplate={mapTemplate}
-                onFieldLeftClick={tryToPlaceField}
-                onFieldRightClick={eraseField}
-            ></BuildArea>
+            <div>
+                <div>
+                    <button onClick={() => onSave(mapTemplateDraft)}>SAVE</button>
+                    <button onClick={() => setMapTemplateDraft(mapTemplateToEdit)}>RESTORE</button>
+                </div>
+                <BuildArea
+                    mapTemplate={mapTemplateDraft}
+                    onFieldLeftClick={tryToPlaceField}
+                    onFieldRightClick={eraseField}
+                ></BuildArea>
+            </div>
         </div>
     );
 };
