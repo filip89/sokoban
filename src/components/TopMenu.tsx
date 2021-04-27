@@ -1,5 +1,6 @@
 import './TopMenu.scss';
 import { Map } from '../models/Map';
+import { FaTrash } from 'react-icons/fa';
 
 export interface TopMenuProps {
     isEditMode: boolean;
@@ -20,17 +21,40 @@ const TopMenu: React.FC<TopMenuProps> = ({
     onMapAdd,
     onMapDelete,
 }) => {
+    function deleteMap(event: React.MouseEvent<SVGElement, MouseEvent>, mapId: string): void {
+        event.stopPropagation();
+        onMapDelete(mapId);
+    }
+
     return (
         <div className="top-menu">
-            <button onClick={onToggleMode}>Toggle mode</button>
-            {maps.map((map) => (
-                <div key={map.id}>
-                    {map.id}
-                    <button onClick={() => onMapSelect(map)}>S</button>
-                    {isEditMode && <button onClick={() => onMapDelete(map.id)}>D</button>}
-                </div>
-            ))}
-            {isEditMode && <button onClick={onMapAdd}>ADD</button>}
+            <button className="top-menu__button" onClick={onToggleMode}>
+                {isEditMode ? 'PLAY' : 'EDIT'}
+            </button>
+            <div className="top-menu__maps maps-container">
+                {maps.map((map) => (
+                    <div
+                        className={
+                            'maps-container__map map-item' + (map.id === selectedMapId ? ' map-item--selected' : '')
+                        }
+                        key={map.id}
+                        onClick={() => onMapSelect(map)}
+                    >
+                        {isEditMode && (
+                            <FaTrash
+                                role="button"
+                                className="map-item__delete"
+                                onClick={(event) => deleteMap(event, map.id)}
+                            ></FaTrash>
+                        )}
+                    </div>
+                ))}
+            </div>
+            {isEditMode && (
+                <button className="top-menu__button" onClick={onMapAdd}>
+                    ADD MAP
+                </button>
+            )}
         </div>
     );
 };

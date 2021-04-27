@@ -10,7 +10,7 @@
         }
     }
     @include fieldSquare;
-    position: absolute;
+    position: relative;
     display: inline-block;
     $height: calc(#{$field-size} / 2);
     &__top {

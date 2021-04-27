@@ -1,9 +1,14 @@
+$background-color: rgb(46, 46, 46);
 $ground-color: rgb(194, 194, 194);
 $field-size: 40px;
 
 @mixin fieldSquare {
-    width: $field-size;
-    height: $field-size;
+    @include square($field-size);
+}
+
+@mixin square($size) {
+    width: $size;
+    height: $size;
 }
 
 .plain-button {

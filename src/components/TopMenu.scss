@@ -1,3 +1,65 @@
+@import '../styles/global';
+
+$menu-height: 80px;
+
 .top-menu {
     display: flex;
+    height: $menu-height;
+    background-color: lighten($background-color, 20%);
+
+    &__maps {
+        $item-gap: 5px;
+        flex-grow: 1;
+        gap: $item-gap;
+        padding: 0 $item-gap;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    &__button {
+        flex-shrink: 0;
+        @include square($menu-height);
+        cursor: pointer;
+        background-color: $background-color;
+        color: white;
+    }
+}
+
+.maps-container {
+    display: flex;
+
+    &__map {
+        flex-shrink: 0;
+    }
+}
+
+.map-item {
+    @include square($menu-height);
+    background-color: khaki;
+    position: relative;
+    cursor: pointer;
+
+    &--selected {
+        background-color: rgb(180, 168, 59);
+    }
+
+    &:hover {
+        .map-item__delete {
+            opacity: 1;
+        }
+    }
+
+    &__delete {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: black;
+        opacity: 0;
+        transition: opacity 0.2s, color 0.2s;
+
+        &:hover {
+            color: red;
+        }
+    }
 }

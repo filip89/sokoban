@@ -1,1 +1,12 @@
+.app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 
+    &__mode-view {
+        flex-grow: 1;
+        width: 100%;
+        overflow: auto;
+    }
+}

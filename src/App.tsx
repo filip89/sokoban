@@ -10,7 +10,7 @@ import { generateEmptyMapTemplate } from './services/generateEmptyMapTemplate';
 import { MapTemplate } from './models/MapTemplate';
 
 function App() {
-    const [isEditMode, setIsEditMode] = useState<boolean>(false);
+    const [isEditMode, setIsEditMode] = useState<boolean>(true);
     const [maps, setMaps] = useState<Map[]>(defaultMaps);
     const [activeMap, setActiveMap] = useState<Map | undefined>(maps[0]);
 
@@ -24,11 +24,13 @@ function App() {
 
     function handleMapAdd(): void {
         let mapsCopy = [...maps];
-        mapsCopy.push({
+        let newMap: Map = {
             id: v4(),
             template: generateEmptyMapTemplate(),
-        });
+        };
+        mapsCopy.push(newMap);
         setMaps(mapsCopy);
+        setActiveMap(newMap);
     }
 
     function handleMapDelete(id: string): void {
@@ -44,7 +46,7 @@ function App() {
             maps.map((map) => {
                 if (map.id !== mapId) return map;
                 let mapCopy = { ...map };
-                map.template = draft;
+                mapCopy.template = draft;
                 return mapCopy;
             })
         );
@@ -54,7 +56,7 @@ function App() {
     }
 
     return (
-        <>
+        <div className="app">
             <TopMenu
                 maps={maps}
                 selectedMapId={activeMap?.id}
@@ -64,16 +66,18 @@ function App() {
                 onMapAdd={handleMapAdd}
                 onMapDelete={handleMapDelete}
             ></TopMenu>
-            {activeMap &&
-                (isEditMode ? (
-                    <Builder
-                        mapTemplateToEdit={activeMap.template}
-                        onSave={(draft) => handleDraftSave(activeMap.id, draft)}
-                    ></Builder>
-                ) : (
-                    <Game mapTemplate={activeMap.template}></Game>
-                ))}
-        </>
+            <div className="app__mode-view">
+                {activeMap &&
+                    (isEditMode ? (
+                        <Builder
+                            mapTemplateToEdit={activeMap.template}
+                            onSave={(draft) => handleDraftSave(activeMap.id, draft)}
+                        ></Builder>
+                    ) : (
+                        <Game mapTemplate={activeMap.template}></Game>
+                    ))}
+            </div>
+        </div>
     );
 }
 
