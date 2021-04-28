@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import Builder from './components/Builder';
 import Game from './components/Game';

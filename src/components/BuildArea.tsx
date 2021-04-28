@@ -1,8 +1,7 @@
 import './BuildArea.scss';
 import { Coordinates } from '../models/Coordinates';
-import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
-import BlockGfx from './BlockGfx';
-import TileGfx from './TileGfx';
+import { MapTemplate } from '../models/MapTemplate';
+import FieldGfx from './FieldGfx';
 
 export interface BuildAreaProps {
     mapTemplate: MapTemplate;
@@ -19,15 +18,6 @@ const BuildArea: React.FC<BuildAreaProps> = ({ mapTemplate, onFieldLeftClick, on
         onFieldRightClick(coordinates);
     }
 
-    function getFieldGfx(sign: MapFieldSign) {
-        if (sign === 'e') return;
-        if (sign === 'o') return <BlockGfx type="obstacle"></BlockGfx>;
-        if (sign === 'd') return <TileGfx type="destination"></TileGfx>;
-        if (sign === 'b') return <BlockGfx type="box"></BlockGfx>;
-        if (sign === 'p') return <BlockGfx type="player"></BlockGfx>;
-        if (sign === 'g') return <TileGfx type="ground"></TileGfx>;
-    }
-
     return (
         <div className="build-area">
             {mapTemplate.map((row, rowIndex) => (
@@ -39,7 +29,7 @@ const BuildArea: React.FC<BuildAreaProps> = ({ mapTemplate, onFieldLeftClick, on
                             onClick={() => onFieldLeftClick({ x: columnIndex, y: rowIndex })}
                             onContextMenu={(e) => handleFieldContextMenu(e, { x: columnIndex, y: rowIndex })}
                         >
-                            {getFieldGfx(fieldSign)}
+                            <FieldGfx sign={fieldSign}></FieldGfx>
                         </div>
                     ))}
                 </div>

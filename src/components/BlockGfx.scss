@@ -11,8 +11,7 @@
     }
     @include fieldSquare;
     position: relative;
-    display: inline-block;
-    $height: calc(#{$field-size} / 2);
+    $height: calc(1em / 2);
     &__top {
         @include fieldSquare;
         position: absolute;
@@ -21,7 +20,7 @@
     &__bottom {
         position: absolute;
         bottom: 0;
-        width: $field-size;
+        width: 1em;
         height: $height;
     }
     &--box {

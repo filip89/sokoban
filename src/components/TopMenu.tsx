@@ -1,6 +1,7 @@
 import './TopMenu.scss';
 import { Map } from '../models/Map';
 import { FaTrash } from 'react-icons/fa';
+import MapComponent from './Map';
 
 export interface TopMenuProps {
     isEditMode: boolean;
@@ -40,6 +41,9 @@ const TopMenu: React.FC<TopMenuProps> = ({
                         key={map.id}
                         onClick={() => onMapSelect(map)}
                     >
+                        <div className="map-item__map">
+                            <MapComponent template={map.template} displayMovables={true}></MapComponent>
+                        </div>
                         {isEditMode && (
                             <FaTrash
                                 role="button"

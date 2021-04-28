@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Coordinates } from '../models/Coordinates';
 import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
-import { generateEmptyMapTemplate } from '../services/generateEmptyMapTemplate';
 import BuildArea from './BuildArea';
 import './Builder.scss';
 import FieldPicker from './FieldPicker';
 
 export interface BuilderProps {
     mapTemplateToEdit: MapTemplate;
-    onSave: (draft: MapTemplate) => void
+    onSave: (draft: MapTemplate) => void;
 }
 
-const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave}) => {
+const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
     const [mapTemplateDraft, setMapTemplateDraft] = useState<MapTemplate>([]);
     const [selectedSign, setSelectedSign] = useState<MapFieldSign>();
 

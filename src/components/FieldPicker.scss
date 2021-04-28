@@ -1,7 +1,10 @@
+@import '../styles/global';
+
 .field-picker {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    font-size: $field-size;
 
     &__field {
         $size: 60px;

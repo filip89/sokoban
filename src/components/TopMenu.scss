@@ -35,18 +35,23 @@ $menu-height: 80px;
 
 .map-item {
     @include square($menu-height);
-    background-color: khaki;
+    background-color: rgb(180, 168, 59);
     position: relative;
     cursor: pointer;
+    overflow: hidden;
 
     &--selected {
-        background-color: rgb(180, 168, 59);
+        background-color: khaki;
     }
 
     &:hover {
         .map-item__delete {
             opacity: 1;
         }
+    }
+
+    &__map {
+        font-size: 5px;
     }
 
     &__delete {

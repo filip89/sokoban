@@ -1,25 +1,23 @@
 import React, { CSSProperties } from 'react';
 import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
-import BlockGfx from './BlockGfx';
+import FieldGfx from './FieldGfx';
 import './Map.scss';
-import TileGfx from './TileGfx';
 
 export interface MapProps {
     template: MapTemplate;
+    displayMovables?: boolean;
 }
 
-const Map: React.FC<MapProps> = React.memo(({ template }) => {
+const Map: React.FC<MapProps> = React.memo(({ template, displayMovables: showMovables }) => {
     function getSlotInlineZIndex(field: MapFieldSign, row: number): CSSProperties {
         return {
-            zIndex: field === 'o' ? row : 0,
+            zIndex: ['o', 'p', 'b'].includes(getFieldSign(field)) ? row : 0,
         };
     }
 
-    function getFieldGfx(sign: MapFieldSign) {
-        if (sign === 'e') return;
-        if (sign === 'o') return <BlockGfx type="obstacle"></BlockGfx>;
-        if (sign === 'd') return <TileGfx type="destination"></TileGfx>;
-        return <TileGfx type="ground"></TileGfx>;
+    function getFieldSign(originalSign: MapFieldSign): MapFieldSign {
+        if (!showMovables && (originalSign === 'b' || originalSign === 'p')) return 'g';
+        return originalSign;
     }
 
     return (
@@ -28,7 +26,7 @@ const Map: React.FC<MapProps> = React.memo(({ template }) => {
                 <div key={rowIndex} className="map__row">
                     {row.map((field, columnIndex) => (
                         <div className="map__field-slot" key={columnIndex} style={getSlotInlineZIndex(field, rowIndex)}>
-                            {getFieldGfx(field)}
+                            <FieldGfx sign={getFieldSign(field)}></FieldGfx>
                         </div>
                     ))}
                 </div>

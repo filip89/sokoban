@@ -1,9 +1,11 @@
 @import '../styles/global';
 
 .build-area {
-    flex-shrink: 0;
     $bckColor: rgb(240, 240, 240);
+    flex-shrink: 0;
+    display: inline-block;
     background-color: $bckColor;
+    font-size: $field-size;
 
     &__row {
         display: flex;

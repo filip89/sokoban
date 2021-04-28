@@ -3,7 +3,7 @@ $ground-color: rgb(194, 194, 194);
 $field-size: 40px;
 
 @mixin fieldSquare {
-    @include square($field-size);
+    @include square(1em);
 }
 
 @mixin square($size) {

@@ -7,7 +7,6 @@
 
 .tile {
     @include fieldSquare;
-    display: inline-block;
     position: relative;
 
     &--ground {
@@ -20,7 +19,7 @@
         @include tileColor($destination-color);
     }
     .tile__inner-square {
-        border: 2px dashed darken($destination-color, 20%);
+        border: 2px dashed darken($destination-color, 20%); //TODO border size on map item
         position: absolute;
         $parent-padding: 10%;
         top: $parent-padding;
