@@ -6,7 +6,7 @@ import { defaultMaps } from './data/defaultMaps';
 import TopMenu from './components/TopMenu';
 import { Map } from './models/Map';
 import { v4 } from 'uuid';
-import { generateEmptyMapTemplate } from './services/generateEmptyMapTemplate';
+import { generateEmptyMapTemplate } from './services/TemplateGenerator';
 import { MapTemplate } from './models/MapTemplate';
 
 function App() {
