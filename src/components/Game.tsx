@@ -3,7 +3,7 @@ import useInput from '../hooks/useInput';
 import useLoop from '../hooks/useLoop';
 import Box from '../models/Box';
 import { Coordinates } from '../models/Coordinates';
-import * as mapScanner from '../services/MapTemplateScanner';
+import * as mapScanner from '../services/TemplateScanner';
 import { getDirectionFromInputKey } from '../services/InputService';
 import './Game.scss';
 import Map from './Map';

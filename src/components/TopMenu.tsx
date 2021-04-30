@@ -42,7 +42,7 @@ const TopMenu: React.FC<TopMenuProps> = ({
                         onClick={() => onMapSelect(map)}
                     >
                         <div className="map-item__map">
-                            <MapComponent template={map.template} displayMovables={true}></MapComponent>
+                            <MapComponent template={map.trimmedTemplate} displayMovables={true}></MapComponent>
                         </div>
                         {isEditMode && (
                             <FaTrash

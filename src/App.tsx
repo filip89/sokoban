@@ -24,10 +24,10 @@ function App() {
 
     function handleMapAdd(): void {
         let mapsCopy = [...maps];
-        let newMap: Map = {
+        let newMap: Map = new Map({
             id: v4(),
             template: generateEmptyMapTemplate(),
-        };
+        });
         mapsCopy.push(newMap);
         setMaps(mapsCopy);
         setActiveMap(newMap);
@@ -43,15 +43,12 @@ function App() {
 
     function handleDraftSave(mapId: string, draft: MapTemplate): void {
         setMaps(
-            maps.map((map) => {
-                if (map.id !== mapId) return map;
-                let mapCopy = { ...map };
-                mapCopy.template = draft;
-                return mapCopy;
-            })
+            maps.map((map) =>
+                map.id !== mapId ? map : new Map({ id: map.id, template: draft, isDefault: map.isDefault })
+            )
         );
         if (activeMap?.id === mapId) {
-            setActiveMap({ ...activeMap, template: draft });
+            setActiveMap(new Map({ ...activeMap, template: draft }));
         }
     }
 

@@ -1,4 +1,4 @@
-import { MapFieldSign, MapTemplate } from "../models/MapTemplate";
+import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
 
 const mapHeight: number = 15;
 const mapWidth: number = 30;
@@ -18,8 +18,10 @@ export function generateMapTemplateFromContent(content: MapTemplate): MapTemplat
     for (let rowIndex = 1; rowIndex <= mapHeight; rowIndex++) {
         let row: MapFieldSign[] = [];
         for (let columnIndex = 1; columnIndex <= mapWidth; columnIndex++) {
-            let existingField: MapFieldSign | undefined = content[rowIndex] ? content[rowIndex][columnIndex] : undefined;
-            row.push(existingField ?? 'e');  
+            let existingField: MapFieldSign | undefined = content[rowIndex]
+                ? content[rowIndex][columnIndex]
+                : undefined;
+            row.push(existingField ?? 'e');
         }
         map.push(row);
     }

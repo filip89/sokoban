@@ -32,11 +32,11 @@ const defaultTemplatesContent: MapTemplate[] = [
 const defaultMaps: Map[] = [];
 
 defaultTemplatesContent.forEach((content, index) =>
-    defaultMaps.push({
+    defaultMaps.push(new Map({
         id: index.toString(),
         isDefault: true,
         template: generateMapTemplateFromContent(content),
-    })
+    }))
 );
 
 export { defaultMaps };

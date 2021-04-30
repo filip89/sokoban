@@ -2,6 +2,24 @@
 
 $menu-height: 80px;
 
+@keyframes scan {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+    25% {
+        transform: translate(0%, -50%);
+    }
+    50% {
+        transform: translate(-50%, -50%);
+    }
+    75% {
+        transform: translate(-100%, -50%);
+    }
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
 .top-menu {
     display: flex;
     height: $menu-height;
@@ -35,16 +53,22 @@ $menu-height: 80px;
 
 .map-item {
     @include square($menu-height);
-    background-color: rgb(180, 168, 59);
+    background-color: white;
+    filter: opacity(40%);
     position: relative;
     cursor: pointer;
     overflow: hidden;
+    transition: filter 0.2s;
 
     &--selected {
-        background-color: khaki;
+        filter: none;
     }
 
     &:hover {
+        filter: opacity(100%);
+        .map-item__map {
+            animation: 3s scan 0.5s linear infinite;
+        }
         .map-item__delete {
             opacity: 1;
         }
@@ -52,6 +76,10 @@ $menu-height: 80px;
 
     &__map {
         font-size: 5px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
     &__delete {
