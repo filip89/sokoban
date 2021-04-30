@@ -1,38 +1,9 @@
 @import '../styles/global';
 
-$menu-height: 80px;
-
-@keyframes scan {
-    0% {
-        transform: translate(-50%, -50%);
-    }
-    25% {
-        transform: translate(0%, -50%);
-    }
-    50% {
-        transform: translate(-50%, -50%);
-    }
-    75% {
-        transform: translate(-100%, -50%);
-    }
-    100% {
-        transform: translate(-50%, -50%);
-    }
-}
-
 .top-menu {
     display: flex;
     height: $menu-height;
     background-color: lighten($background-color, 20%);
-
-    &__maps {
-        $item-gap: 5px;
-        flex-grow: 1;
-        gap: $item-gap;
-        padding: 0 $item-gap;
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
 
     &__button {
         flex-shrink: 0;
@@ -41,58 +12,10 @@ $menu-height: 80px;
         background-color: $background-color;
         color: white;
     }
-}
 
-.maps-container {
-    display: flex;
-
-    &__map {
-        flex-shrink: 0;
-    }
-}
-
-.map-item {
-    @include square($menu-height);
-    background-color: white;
-    filter: opacity(40%);
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-    transition: filter 0.2s;
-
-    &--selected {
-        filter: none;
-    }
-
-    &:hover {
-        filter: opacity(100%);
-        .map-item__map {
-            animation: 3s scan 0.5s linear infinite;
-        }
-        .map-item__delete {
-            opacity: 1;
-        }
-    }
-
-    &__map {
-        font-size: 5px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    &__delete {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        cursor: pointer;
-        color: black;
-        opacity: 0;
-        transition: opacity 0.2s, color 0.2s;
-
-        &:hover {
-            color: red;
-        }
+    &__maps {
+        flex-grow: 1;
+        overflow-x: auto;
+        overflow-y: hidden;
     }
 }

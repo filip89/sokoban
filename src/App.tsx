@@ -8,6 +8,7 @@ import { Map } from './models/Map';
 import { v4 } from 'uuid';
 import { generateEmptyMapTemplate } from './services/TemplateGenerator';
 import { MapTemplate } from './models/MapTemplate';
+import MapsPicker from './components/MapsPicker';
 
 function App() {
     const [isEditMode, setIsEditMode] = useState<boolean>(true);
@@ -54,15 +55,15 @@ function App() {
 
     return (
         <div className="app">
-            <TopMenu
-                maps={maps}
-                selectedMapId={activeMap?.id}
-                isEditMode={isEditMode}
-                onToggleMode={handleToggleMode}
-                onMapSelect={handleMapSelect}
-                onMapAdd={handleMapAdd}
-                onMapDelete={handleMapDelete}
-            ></TopMenu>
+            <TopMenu isEditMode={isEditMode} onToggleMode={handleToggleMode} onMapAdd={handleMapAdd}>
+                <MapsPicker
+                    maps={maps}
+                    selectedMapId={activeMap?.id}
+                    isEditMode={isEditMode}
+                    onMapSelect={handleMapSelect}
+                    onMapDelete={handleMapDelete}
+                ></MapsPicker>
+            </TopMenu>
             <div className="app__mode-view">
                 {activeMap &&
                     (isEditMode ? (

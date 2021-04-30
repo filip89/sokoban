@@ -1,6 +1,7 @@
 $background-color: rgb(46, 46, 46);
 $ground-color: rgb(194, 194, 194);
 $field-size: 40px;
+$menu-height: 80px;
 
 @mixin fieldSquare {
     @include square(1em);
