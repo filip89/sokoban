@@ -4,6 +4,8 @@ import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
 import BuildArea from './BuildArea';
 import './Builder.scss';
 import FieldPicker from './FieldPicker';
+import { FaSave } from 'react-icons/fa';
+import { MdRestore } from 'react-icons/md';
 
 export interface BuilderProps {
     mapTemplateToEdit: MapTemplate;
@@ -40,20 +42,32 @@ const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
     }
 
     return (
-        <div className="builder">
-            <FieldPicker selectedSign={selectedSign} onPick={handleFieldPick}></FieldPicker>
-            <div>
-                <div>
-                    <button onClick={() => onSave(mapTemplateDraft)}>SAVE</button>
-                    <button onClick={() => setMapTemplateDraft(mapTemplateToEdit)}>RESTORE</button>
+        <>
+            <div className="builder">
+                <div className="builder__toolbar">
+                    <div className="builder__action-buttons">
+                        <button className="builder__action-button" onClick={() => onSave(mapTemplateDraft)}>
+                            <FaSave></FaSave>
+                        </button>
+                        <button
+                            className="builder__action-button"
+                            onClick={() => setMapTemplateDraft(mapTemplateToEdit)}
+                        >
+                            <MdRestore></MdRestore>
+                        </button>
+                    </div>
+                    <FieldPicker selectedSign={selectedSign} onPick={handleFieldPick}></FieldPicker>
                 </div>
-                <BuildArea
-                    mapTemplate={mapTemplateDraft}
-                    onFieldLeftClick={tryToPlaceField}
-                    onFieldRightClick={eraseField}
-                ></BuildArea>
+
+                <div className="builder__build-area">
+                    <BuildArea
+                        mapTemplate={mapTemplateDraft}
+                        onFieldLeftClick={tryToPlaceField}
+                        onFieldRightClick={eraseField}
+                    ></BuildArea>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

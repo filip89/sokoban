@@ -174,13 +174,13 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
 
     return (
         <div className="game-wrapper">
-            <div>
-                <div className="game-status">
-                    <div>Boxes left: {boxesLeft}</div>
-                    <button className="reset-btn" onClick={reset}>
-                        <BiReset size="22" />
-                    </button>
-                </div>
+            <div className="game-wrapper__status">
+                <button className="reset-btn" onClick={reset}>
+                    <BiReset size="22" />
+                </button>
+                <div>Boxes left: {boxesLeft}</div>
+            </div>
+            <div className="game-wrapper__game">
                 <div tabIndex={-1} className="game" onKeyDown={keyDownHandler} onKeyUp={keyUpHandler}>
                     <Map template={mapTemplate}></Map>
                     {playerElement}

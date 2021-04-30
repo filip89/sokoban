@@ -72,7 +72,7 @@ function App() {
                             onSave={(draft) => handleDraftSave(activeMap.id, draft)}
                         ></Builder>
                     ) : (
-                        <Game mapTemplate={activeMap.template}></Game>
+                        <Game mapTemplate={activeMap.trimmedTemplate}></Game>
                     ))}
             </div>
         </div>

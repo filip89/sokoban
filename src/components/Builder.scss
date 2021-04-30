@@ -1,3 +1,36 @@
+@import '../styles/global';
+
 .builder {
     display: flex;
+    height: 100%;
+
+    &__toolbar {
+        overflow: auto;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        padding: 20px;
+    }
+
+    &__build-area {
+        flex-grow: 1;
+        overflow: auto;
+    }
+
+    &__action-buttons {
+        display: flex;
+    }
+
+    &__action-button {
+        @extend .plain-button;
+        flex-grow: 1;
+        cursor: pointer;
+        padding: 0.5rem 0;
+        transition: 0.2s background-color;
+
+        &:hover {
+            background-color: darkgray;
+        }
+    }
 }

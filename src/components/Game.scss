@@ -1,13 +1,42 @@
 @import '../styles/global';
 
 .game-wrapper {
+    height: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+
+    &__status {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    &__game {
+        flex-grow: 1;
+        overflow: auto;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+    }
 }
 
-.game-status {
-    display: flex;
-    justify-content: space-between;
+// TODO add perspective?
+.game {
+    position: relative;
+    font-size: $field-size;
+}
+
+.movable-wrapper {
+    position: absolute;
+    display: inline-block;
+    transition: 0.25s left linear, 0.25s top linear;
+
+    &--no-transition {
+        transition: none;
+    }
 }
 
 .reset-btn {
@@ -21,22 +50,5 @@
 
     &:hover {
         background-color: darken($color, 10%);
-    }
-}
-
-// TODO add perspective?
-.game {
-    position: relative;
-    display: table;
-    font-size: $field-size;
-}
-
-.movable-wrapper {
-    position: absolute;
-    display: inline-block;
-    transition: 0.25s left linear, 0.25s top linear;
-
-    &--no-transition {
-        transition: none;
     }
 }
