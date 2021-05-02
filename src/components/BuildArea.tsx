@@ -14,53 +14,56 @@ export interface BuildAreaProps {
 
 const BuildArea: React.FC<BuildAreaProps> = ({ mapTemplate, selectedSign, onBuild }) => {
     const [anchorPoint, setAnchorPoint] = useState<Coordinates>();
-    const [startPoint, setStartPoint] = useState<Coordinates>();
-    const [endPoint, setEndPoint] = useState<Coordinates>();
+    const [lastPoint, setLastPoint] = useState<Coordinates>();
 
     function resetPoints(): void {
         setAnchorPoint(undefined);
-        setStartPoint(undefined);
-        setEndPoint(undefined);
+        setLastPoint(undefined);
     }
 
     function handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>, coordinates: Coordinates): void {
         if (!selectedSign) return;
         if (event.button === 0) {
             setAnchorPoint(coordinates);
-            setStartPoint(coordinates);
-            setEndPoint(coordinates);
+            setLastPoint(coordinates);
         } else if (event.button === 2) {
             resetPoints();
         }
     }
 
     function handleMouseEnter(point: Coordinates): void {
-        if (anchorPoint && startPoint && endPoint) {
-            let startPointCopy: Coordinates = { ...startPoint };
-            let endPointCopy: Coordinates = { ...endPoint };
-            if (anchorPoint.x < point.x) {
-                startPointCopy.x = anchorPoint.x;
-                endPointCopy.x = point.x;
-            } else {
-                startPointCopy.x = point.x;
-                endPointCopy.x = anchorPoint.x;
-            }
-            if (anchorPoint.y < point.y) {
-                startPointCopy.y = anchorPoint.y;
-                endPointCopy.y = point.y;
-            } else {
-                startPointCopy.y = point.y;
-                endPointCopy.y = anchorPoint.y;
-            }
-            setStartPoint(startPointCopy);
-            setEndPoint(endPointCopy);
+        if (anchorPoint) {
+            setLastPoint(point);
         }
     }
 
     function handleMouseUp(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-        if (event.button === 0 && startPoint && endPoint) {
-            onBuild(startPoint, endPoint);
+        let points: Coordinates[] | undefined = getStartAndEndPoints();
+        if (event.button === 0 && points) {
+            onBuild(points[0], points[1]);
             resetPoints();
+        }
+    }
+
+    function getStartAndEndPoints(): [Coordinates, Coordinates] | undefined {
+        if (anchorPoint && lastPoint) {
+            let startPoint: Coordinates = { x: 0, y: 0 };
+            let endPoint: Coordinates = { x: 0, y: 0 };
+            if (anchorPoint.x < lastPoint.x) {
+                startPoint.x = anchorPoint.x;
+                endPoint.x = lastPoint.x;
+            } else {
+                startPoint.x = lastPoint.x;
+                endPoint.x = anchorPoint.x;
+            }
+            if (anchorPoint.y < lastPoint.y) {
+                startPoint.y = anchorPoint.y;
+                endPoint.y = lastPoint.y;
+            } else {
+                startPoint.y = lastPoint.y;
+                endPoint.y = anchorPoint.y;
+            }
+            return [startPoint, endPoint];
         }
     }
 
@@ -75,7 +78,9 @@ const BuildArea: React.FC<BuildAreaProps> = ({ mapTemplate, selectedSign, onBuil
     }
 
     function fieldIsSelected(point: Coordinates): boolean {
-        if (!startPoint || !endPoint) return false;
+        let points: Coordinates[] | undefined = getStartAndEndPoints();
+        if (!points) return false;
+        const [startPoint, endPoint] = points;
         const isBetweenColumns: boolean = point.y >= startPoint.y && point.y <= endPoint.y;
         const isBetweenRows: boolean = point.x >= startPoint.x && point.x <= endPoint.x;
         return isBetweenColumns && isBetweenRows;
@@ -97,7 +102,7 @@ const BuildArea: React.FC<BuildAreaProps> = ({ mapTemplate, selectedSign, onBuil
                                 key={columnIndex}
                                 onContextMenu={(e) => handleFieldContextMenu(e)}
                                 onMouseDown={(e) => handleMouseDown(e, location)}
-                                onMouseEnter={(e) => handleMouseEnter(location)}
+                                onMouseEnter={() => handleMouseEnter(location)}
                                 onMouseUp={(e) => handleMouseUp(e)}
                             >
                                 <MemoizedFieldGfx sign={getFieldSign(fieldSign, location)}></MemoizedFieldGfx>
