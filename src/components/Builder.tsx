@@ -14,7 +14,7 @@ export interface BuilderProps {
 
 const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
     const [mapTemplateDraft, setMapTemplateDraft] = useState<MapTemplate>([]);
-    const [selectedSign, setSelectedSign] = useState<MapFieldSign>();
+    const [selectedSign, setSelectedSign] = useState<MapFieldSign | undefined>('g');
 
     useEffect(() => {
         setMapTemplateDraft(mapTemplateToEdit);
@@ -24,21 +24,18 @@ const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
         selectedSign === sign ? setSelectedSign(undefined) : setSelectedSign(sign);
     }
 
-    function updateMapTemplate(sign: MapFieldSign, coordinates: Coordinates): void {
-        let mapTemplateCopy: MapTemplate = [...mapTemplateDraft];
-        let templateRow: MapFieldSign[] = [...mapTemplateCopy[coordinates.y]];
-        templateRow[coordinates.x] = sign;
-        mapTemplateCopy[coordinates.y] = templateRow;
-        setMapTemplateDraft(mapTemplateCopy);
-    }
-
-    function tryToPlaceField(coordinates: Coordinates): void {
+    function handleOnBuild(startPoint: Coordinates, endPoint: Coordinates): void {
         if (!selectedSign) return;
-        updateMapTemplate(selectedSign, coordinates);
-    }
-
-    function eraseField(coordinates: Coordinates): void {
-        updateMapTemplate('e', coordinates);
+        console.log(startPoint, endPoint);
+        let mapTemplateCopy: MapTemplate = [...mapTemplateDraft];
+        for (let rowIndex = startPoint.y; rowIndex <= endPoint.y; rowIndex++) {
+            let row: MapFieldSign[] = [...mapTemplateCopy[rowIndex]];
+            for (let columnIndex = startPoint.x; columnIndex <= endPoint.x; columnIndex++) {
+                row[columnIndex] = selectedSign;
+            }
+            mapTemplateCopy[rowIndex] = row;
+        }
+        setMapTemplateDraft(mapTemplateCopy);
     }
 
     return (
@@ -62,8 +59,8 @@ const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
                 <div className="builder__build-area">
                     <BuildArea
                         mapTemplate={mapTemplateDraft}
-                        onFieldLeftClick={tryToPlaceField}
-                        onFieldRightClick={eraseField}
+                        onBuild={handleOnBuild}
+                        selectedSign={selectedSign}
                     ></BuildArea>
                 </div>
             </div>

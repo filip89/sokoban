@@ -1,12 +1,11 @@
 @import '../styles/global';
 
 .build-area {
-    $bckColor: rgb(240, 240, 240);
     flex-shrink: 0;
     display: inline-block;
-    background-color: $bckColor;
     font-size: $field-size;
     margin-top: 20px;
+    padding: 0 1rem;
 
     &__row {
         display: flex;
@@ -14,7 +13,7 @@
 
     &__field-slot {
         @include fieldSquare;
-        outline: 1px solid darken($bckColor, 10%);
+        outline: 1px solid white;
         cursor: pointer;
 
         > * {
