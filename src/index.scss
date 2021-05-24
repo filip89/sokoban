@@ -20,4 +20,7 @@ code {
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+    &:focus-visible {
+        outline: none;
+    }
 }
