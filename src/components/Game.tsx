@@ -17,14 +17,15 @@ export interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ mapTemplate }) => {
-    const [playerField, setPlayerField] = useState<Field>(mapScanner.getPlayerField(mapTemplate));
+    const [playerField, setPlayerField] = useState<Field>(() => mapScanner.getPlayerField(mapTemplate));
     const playerRef = useRef<HTMLDivElement>(null);
     const boxesInitialData: Box[] = useMemo<Box[]>(() => mapScanner.getBoxes(mapTemplate), [mapTemplate]);
     const [boxesState, setBoxesState] = useState<Box[]>(boxesInitialData);
     const boxesRefs = useRef<HTMLDivElement[]>([]);
-    const destinationLocations: Field[] = useMemo<Field[]>(() => mapScanner.getDestinationLocations(mapTemplate), [
-        mapTemplate,
-    ]);
+    const destinationLocations: Field[] = useMemo<Field[]>(
+        () => mapScanner.getDestinationLocations(mapTemplate),
+        [mapTemplate]
+    );
     const [currentInput, keyDownHandler, keyUpHandler] = useInput();
     const [isAnimating, setIsAnimating] = useState(false);
     const [completed, setCompleted] = useState<boolean>(false);
