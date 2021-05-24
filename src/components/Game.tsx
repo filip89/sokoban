@@ -26,7 +26,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         () => mapScanner.getDestinationLocations(mapTemplate),
         [mapTemplate]
     );
-    const [currentInput, keyDownHandler, keyUpHandler] = useInput();
+    const currentInput = useInput();
     const [isAnimating, setIsAnimating] = useState(false);
     const [completed, setCompleted] = useState<boolean>(false);
 
@@ -182,7 +182,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
                 <div>Boxes left: {boxesLeft}</div>
             </div>
             <div className="game-wrapper__game">
-                <div tabIndex={-1} className="game" onKeyDown={keyDownHandler} onKeyUp={keyUpHandler}>
+                <div className="game">
                     <Map template={mapTemplate}></Map>
                     {playerElement}
                     {boxesElements}
