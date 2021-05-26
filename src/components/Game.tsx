@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import useInput from '../hooks/useInput';
 import useLoop from '../hooks/useLoop';
 import Box from '../models/Box';
@@ -11,6 +11,7 @@ import BlockGfx from './BlockGfx';
 import { BiReset } from 'react-icons/bi';
 import { Field } from '../models/Field';
 import { MapTemplate } from '../models/MapTemplate';
+import useBoxes from '../hooks/useBoxes';
 
 export interface GameProps {
     mapTemplate: MapTemplate;
@@ -19,9 +20,7 @@ export interface GameProps {
 const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     const [playerField, setPlayerField] = useState<Field>(() => mapScanner.getPlayerField(mapTemplate));
     const playerRef = useRef<HTMLDivElement>(null);
-    const boxesInitialData: Box[] = useMemo<Box[]>(() => mapScanner.getBoxes(mapTemplate), [mapTemplate]);
-    const [boxesState, setBoxesState] = useState<Box[]>(boxesInitialData);
-    const boxesRefs = useRef<HTMLDivElement[]>([]);
+    const [boxesState, setBoxesState, boxesRefs, boxesElements] = useBoxes(mapTemplate);
     const destinationLocations: Field[] = useMemo<Field[]>(
         () => mapScanner.getDestinationLocations(mapTemplate),
         [mapTemplate]
@@ -46,27 +45,6 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         updateElementPosition(playerRef.current!, playerField.coordinates);
     }, [playerField]);
 
-    useLayoutEffect(() => {
-        boxesState.forEach((box) => {
-            const boxElem = getBoxElement(box.id);
-            if (boxElem) {
-                let position: Coordinates = box.location.coordinates;
-                updateElementPosition(boxElem, position);
-                boxElem.style.zIndex = position.y.toString();
-            }
-        });
-    }, [boxesState]);
-
-    useEffect(() => {
-        boxesRefs.current = boxesRefs.current.slice(0, boxesInitialData.length);
-    }, [boxesInitialData]);
-
-    function getBoxElement(boxId: string): HTMLDivElement | null | undefined {
-        return boxesRefs.current.find((boxElem) => {
-            return boxElem?.dataset.boxId === boxId;
-        });
-    }
-
     function updateElementPosition(elem: HTMLDivElement, coordinates: Coordinates): void {
         elem.style.left = `${coordinates.x * 40}px`;
         elem.style.top = `${coordinates.y * 40}px`;
@@ -78,7 +56,7 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         setPlayerField(mapScanner.getPlayerField(mapTemplate));
         setBoxesState(mapScanner.getBoxes(mapTemplate));
         setCompleted(false);
-    }, [mapTemplate]);
+    }, [mapTemplate, boxesRefs, setBoxesState]);
 
     useLayoutEffect(() => {
         reset();
@@ -153,25 +131,6 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
             <BlockGfx type="player"></BlockGfx>
         </div>
     );
-
-    function registerBoxRef(element: HTMLDivElement | null, index: number): void {
-        if (element) {
-            boxesRefs.current[index] = element;
-        }
-    }
-
-    const boxesElements: JSX.Element[] = useMemo<JSX.Element[]>(() => {
-        return boxesInitialData.map((box, index) => (
-            <div
-                className="movable-wrapper"
-                ref={(element) => registerBoxRef(element, index)}
-                key={box.id}
-                data-box-id={box.id}
-            >
-                <BlockGfx type="box"></BlockGfx>
-            </div>
-        ));
-    }, [boxesInitialData]);
 
     return (
         <div className="game-wrapper">
