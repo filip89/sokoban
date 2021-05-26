@@ -1,25 +1,24 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import useInput from '../hooks/useInput';
-import useLoop from '../hooks/useLoop';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import useInput from '../game-hooks/useInput';
+import useLoop from '../game-hooks/useLoop';
 import Box from '../models/Box';
 import { Coordinates } from '../models/Coordinates';
 import * as mapScanner from '../services/TemplateScanner';
 import { getDirectionFromInputKey } from '../services/InputService';
 import './Game.scss';
 import Map from './Map';
-import BlockGfx from './BlockGfx';
 import { BiReset } from 'react-icons/bi';
 import { Field } from '../models/Field';
 import { MapTemplate } from '../models/MapTemplate';
-import useBoxes from '../hooks/useBoxes';
+import useBoxes from '../game-hooks/useBoxes';
+import usePlayer from '../game-hooks/usePlayer';
 
 export interface GameProps {
     mapTemplate: MapTemplate;
 }
 
 const Game: React.FC<GameProps> = ({ mapTemplate }) => {
-    const [playerField, setPlayerField] = useState<Field>(() => mapScanner.getPlayerField(mapTemplate));
-    const playerRef = useRef<HTMLDivElement>(null);
+    const [playerField, setPlayerField, playerRef, playerElement] = usePlayer(mapTemplate, handleTransitionEnd);
     const [boxesState, setBoxesState, boxesRefs, boxesElements] = useBoxes(mapTemplate);
     const destinationLocations: Field[] = useMemo<Field[]>(
         () => mapScanner.getDestinationLocations(mapTemplate),
@@ -41,22 +40,13 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
 
     useLoop(tryToMove, 10);
 
-    useLayoutEffect(() => {
-        updateElementPosition(playerRef.current!, playerField.coordinates);
-    }, [playerField]);
-
-    function updateElementPosition(elem: HTMLDivElement, coordinates: Coordinates): void {
-        elem.style.left = `${coordinates.x * 40}px`;
-        elem.style.top = `${coordinates.y * 40}px`;
-    }
-
     const reset = useCallback(() => {
         playerRef.current && disableElementAnimationForTick(playerRef.current);
         boxesRefs.current.forEach((boxElem) => disableElementAnimationForTick(boxElem));
         setPlayerField(mapScanner.getPlayerField(mapTemplate));
         setBoxesState(mapScanner.getBoxes(mapTemplate));
         setCompleted(false);
-    }, [mapTemplate, boxesRefs, setBoxesState]);
+    }, [mapTemplate, boxesRefs, setBoxesState, playerRef, setPlayerField]);
 
     useLayoutEffect(() => {
         reset();
@@ -120,17 +110,6 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
             setCompleted(true);
         }
     }
-
-    const playerElement: JSX.Element = (
-        <div
-            ref={playerRef}
-            className="movable-wrapper"
-            onTransitionEnd={handleTransitionEnd}
-            style={{ zIndex: playerField.coordinates.y }}
-        >
-            <BlockGfx type="player"></BlockGfx>
-        </div>
-    );
 
     return (
         <div className="game-wrapper">
