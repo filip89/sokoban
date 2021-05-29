@@ -1,25 +1,29 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import BlockGfx from '../components/BlockGfx';
-import { Coordinates } from '../models/Coordinates';
 import { Field } from '../models/Field';
 import { MapTemplate } from '../models/MapTemplate';
 import * as mapScanner from '../services/TemplateScanner';
+import updateMovableElementPosition from '../services/updateMovableElementPosition';
 
-function usePlayer(mapTemplate: MapTemplate, transitionEndHandler: () => void): [Field, React.Dispatch<React.SetStateAction<Field>>, React.RefObject<HTMLDivElement>, JSX.Element] {
+function usePlayer(
+    mapTemplate: MapTemplate,
+    transitionEndHandler: () => void
+): [Field, React.Dispatch<React.SetStateAction<Field>>, JSX.Element] {
     const [playerField, setPlayerField] = useState<Field>(() => mapScanner.getPlayerField(mapTemplate));
     const playerRef = useRef<HTMLDivElement>(null);
+    const [playerKey, setPlayerKey] = useState(Math.random()); //used to change player element in dom and prevent animation when changing maps
 
     useLayoutEffect(() => {
-        updateElementPosition(playerRef.current!, playerField.coordinates);
-    }, [playerField]);
+        setPlayerKey(Math.random());
+    }, [mapTemplate]);
 
-    function updateElementPosition(elem: HTMLDivElement, coordinates: Coordinates): void {
-        elem.style.left = `${coordinates.x * 40}px`;
-        elem.style.top = `${coordinates.y * 40}px`;
-    }
+    useLayoutEffect(() => {
+        updateMovableElementPosition(playerRef.current!, playerField.coordinates)
+    }, [playerField]);
 
     const playerElement: JSX.Element = (
         <div
+            key={playerKey}
             ref={playerRef}
             className="movable-wrapper"
             onTransitionEnd={transitionEndHandler}
@@ -29,7 +33,7 @@ function usePlayer(mapTemplate: MapTemplate, transitionEndHandler: () => void): 
         </div>
     );
 
-    return [playerField, setPlayerField, playerRef, playerElement];
+    return [playerField, setPlayerField, playerElement];
 }
 
 export default usePlayer;

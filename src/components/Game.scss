@@ -33,10 +33,6 @@
     position: absolute;
     display: inline-block;
     transition: 0.25s left linear, 0.25s top linear;
-
-    &--no-transition {
-        transition: none;
-    }
 }
 
 .reset-btn {

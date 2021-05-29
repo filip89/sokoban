@@ -4,10 +4,9 @@ import Box from '../models/Box';
 import { Coordinates } from '../models/Coordinates';
 import { MapTemplate } from '../models/MapTemplate';
 import * as mapScanner from '../services/TemplateScanner';
+import updateMovableElementPosition from '../services/updateMovableElementPosition';
 
-function useBoxes(
-    mapTemplate: MapTemplate
-): [Box[], React.Dispatch<React.SetStateAction<Box[]>>, React.MutableRefObject<HTMLDivElement[]>, JSX.Element[]] {
+function useBoxes(mapTemplate: MapTemplate): [Box[], React.Dispatch<React.SetStateAction<Box[]>>, JSX.Element[]] {
     const boxesInitialData: Box[] = useMemo<Box[]>(() => mapScanner.getBoxes(mapTemplate), [mapTemplate]);
     const [boxesState, setBoxesState] = useState<Box[]>(boxesInitialData);
     const boxesRefs = useRef<HTMLDivElement[]>([]);
@@ -17,11 +16,15 @@ function useBoxes(
             const boxElem = getBoxElement(box.id);
             if (boxElem) {
                 let position: Coordinates = box.location.coordinates;
-                updateElementPosition(boxElem, position);
+                updateMovableElementPosition(boxElem, position);
                 boxElem.style.zIndex = position.y.toString();
             }
         });
     }, [boxesState]);
+
+    useEffect(() => {
+        boxesRefs.current = boxesRefs.current.slice(0, boxesInitialData.length); //remove old boxes in latter indexes if any exist
+    }, [boxesInitialData]);
 
     function getBoxElement(boxId: string): HTMLDivElement | null | undefined {
         return boxesRefs.current.find((boxElem) => {
@@ -29,14 +32,11 @@ function useBoxes(
         });
     }
 
-    function updateElementPosition(elem: HTMLDivElement, coordinates: Coordinates): void {
-        elem.style.left = `${coordinates.x * 40}px`;
-        elem.style.top = `${coordinates.y * 40}px`;
+    function registerBoxRef(element: HTMLDivElement | null, index: number): void {
+        if (element) {
+            boxesRefs.current[index] = element;
+        }
     }
-
-    useEffect(() => {
-        boxesRefs.current = boxesRefs.current.slice(0, boxesInitialData.length);
-    }, [boxesInitialData]);
 
     const boxesElements: JSX.Element[] = useMemo<JSX.Element[]>(() => {
         return boxesInitialData.map((box, index) => (
@@ -51,13 +51,7 @@ function useBoxes(
         ));
     }, [boxesInitialData]);
 
-    function registerBoxRef(element: HTMLDivElement | null, index: number): void {
-        if (element) {
-            boxesRefs.current[index] = element;
-        }
-    }
-
-    return [boxesState, setBoxesState, boxesRefs, boxesElements];
+    return [boxesState, setBoxesState, boxesElements];
 }
 
 export default useBoxes;

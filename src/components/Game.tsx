@@ -18,8 +18,8 @@ export interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ mapTemplate }) => {
-    const [playerField, setPlayerField, playerRef, playerElement] = usePlayer(mapTemplate, handleTransitionEnd);
-    const [boxesState, setBoxesState, boxesRefs, boxesElements] = useBoxes(mapTemplate);
+    const [playerField, setPlayerField, playerElement] = usePlayer(mapTemplate, handleTransitionEnd);
+    const [boxesState, setBoxesState, boxesElements] = useBoxes(mapTemplate);
     const destinationLocations: Field[] = useMemo<Field[]>(
         () => mapScanner.getDestinationLocations(mapTemplate),
         [mapTemplate]
@@ -41,23 +41,14 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     useLoop(tryToMove, 10);
 
     const reset = useCallback(() => {
-        playerRef.current && disableElementAnimationForTick(playerRef.current);
-        boxesRefs.current.forEach((boxElem) => disableElementAnimationForTick(boxElem));
         setPlayerField(mapScanner.getPlayerField(mapTemplate));
         setBoxesState(mapScanner.getBoxes(mapTemplate));
         setCompleted(false);
-    }, [mapTemplate, boxesRefs, setBoxesState, playerRef, setPlayerField]);
+    }, [mapTemplate, setBoxesState, setPlayerField]); //only mapTemplate really necessary, but others show warning (since from custom hooks)
 
     useLayoutEffect(() => {
         reset();
     }, [mapTemplate, reset]);
-
-    function disableElementAnimationForTick(elem: HTMLDivElement): void {
-        elem?.classList.add('movable-wrapper--no-transition');
-        setTimeout(() => {
-            elem?.classList.remove('movable-wrapper--no-transition');
-        });
-    }
 
     function tryToMove(): void {
         if (isAnimating || !currentInput || completed) return;
