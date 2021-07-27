@@ -4,8 +4,6 @@ import './FieldPicker.scss';
 import TileGfx from './TileGfx';
 import { FaEraser } from 'react-icons/fa';
 
-const fieldSigns: MapFieldSign[] = ['e', 'g', 'o', 'd', 'b', 'p'];
-
 export interface FieldPickerProps {
     selectedSign?: MapFieldSign;
     onPick: (sign: MapFieldSign) => void;
@@ -18,22 +16,26 @@ const FieldPicker: React.FC<FieldPickerProps> = ({ selectedSign, onPick }) => {
         return className;
     }
 
-    function getFieldGfx(sign: MapFieldSign) {
-        if (sign === 'e') return <FaEraser></FaEraser>;
-        if (sign === 'o') return <BlockGfx type="obstacle"></BlockGfx>;
-        if (sign === 'd') return <TileGfx type="destination"></TileGfx>;
-        if (sign === 'b') return <BlockGfx type="box"></BlockGfx>;
-        if (sign === 'p') return <BlockGfx type="player"></BlockGfx>;
-        if (sign === 'g') return <TileGfx type="ground"></TileGfx>;
-    }
-
     return (
         <div className="field-picker">
-            {fieldSigns.map((fieldSign) => (
-                <div className={getFieldClassName(fieldSign)} key={fieldSign} onClick={() => onPick(fieldSign)}>
-                    {getFieldGfx(fieldSign)}
-                </div>
-            ))}
+            <div className={getFieldClassName('e')} key={'e'} onClick={() => onPick('e')}>
+                <FaEraser></FaEraser>
+            </div>
+            <div className={getFieldClassName('o')} key={'o'} onClick={() => onPick('o')}>
+                <BlockGfx type="obstacle"></BlockGfx>
+            </div>
+            <div className={getFieldClassName('d')} key={'d'} onClick={() => onPick('d')}>
+                <TileGfx type="destination"></TileGfx>
+            </div>
+            <div className={getFieldClassName('b')} key={'b'} onClick={() => onPick('b')}>
+                <BlockGfx type="box"></BlockGfx>
+            </div>
+            <div className={getFieldClassName('p')} key={'p'} onClick={() => onPick('p')}>
+                <BlockGfx type="player"></BlockGfx>
+            </div>
+            <div className={getFieldClassName('g')} key={'g'} onClick={() => onPick('g')}>
+                <TileGfx type="ground"></TileGfx>
+            </div>
         </div>
     );
 };
