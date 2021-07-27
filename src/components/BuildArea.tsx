@@ -46,29 +46,31 @@ const BuildArea: React.FC<BuildAreaProps> = ({ mapTemplate, selectedSign, onBuil
     }
 
     function getStartAndEndPoints(): [Coordinates, Coordinates] | undefined {
-        if (anchorPoint && lastPoint) {
-            let startPoint: Coordinates = { x: 0, y: 0 };
-            let endPoint: Coordinates = { x: 0, y: 0 };
-            if (anchorPoint.x < lastPoint.x) {
-                startPoint.x = anchorPoint.x;
-                endPoint.x = lastPoint.x;
-            } else {
-                startPoint.x = lastPoint.x;
-                endPoint.x = anchorPoint.x;
-            }
-            if (anchorPoint.y < lastPoint.y) {
-                startPoint.y = anchorPoint.y;
-                endPoint.y = lastPoint.y;
-            } else {
-                startPoint.y = lastPoint.y;
-                endPoint.y = anchorPoint.y;
-            }
-            return [startPoint, endPoint];
-        }
-    }
+        if (!anchorPoint || !lastPoint) return;
 
-    function handleFieldContextMenu(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-        event.preventDefault();
+        if (selectedSign === 'p') {
+            return [lastPoint, lastPoint];
+        }
+
+        let startPoint: Coordinates = { x: 0, y: 0 };
+        let endPoint: Coordinates = { x: 0, y: 0 };
+
+        if (anchorPoint.x < lastPoint.x) {
+            startPoint.x = anchorPoint.x;
+            endPoint.x = lastPoint.x;
+        } else {
+            startPoint.x = lastPoint.x;
+            endPoint.x = anchorPoint.x;
+        }
+        if (anchorPoint.y < lastPoint.y) {
+            startPoint.y = anchorPoint.y;
+            endPoint.y = lastPoint.y;
+        } else {
+            startPoint.y = lastPoint.y;
+            endPoint.y = anchorPoint.y;
+        }
+
+        return [startPoint, endPoint];
     }
 
     function handleMouseLeave(): void {
@@ -100,7 +102,7 @@ const BuildArea: React.FC<BuildAreaProps> = ({ mapTemplate, selectedSign, onBuil
                             <div
                                 className="build-area__field-slot"
                                 key={columnIndex}
-                                onContextMenu={(e) => handleFieldContextMenu(e)}
+                                onContextMenu={(e) => e.preventDefault()}
                                 onMouseDown={(e) => handleMouseDown(e, location)}
                                 onMouseEnter={() => handleMouseEnter(location)}
                                 onMouseUp={(e) => handleMouseUp(e)}

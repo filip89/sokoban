@@ -6,6 +6,7 @@ import './Builder.scss';
 import FieldPicker from './FieldPicker';
 import { FaSave } from 'react-icons/fa';
 import { MdRestore } from 'react-icons/md';
+import { getPlayerLocation } from '../services/TemplateScanner';
 
 export interface BuilderProps {
     mapTemplateToEdit: MapTemplate;
@@ -14,7 +15,7 @@ export interface BuilderProps {
 
 const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
     const [mapTemplateDraft, setMapTemplateDraft] = useState<MapTemplate>([]);
-    const [selectedSign, setSelectedSign] = useState<MapFieldSign | undefined>('g');
+    const [selectedSign, setSelectedSign] = useState<MapFieldSign | undefined>();
 
     useEffect(() => {
         setMapTemplateDraft(mapTemplateToEdit);
@@ -26,8 +27,10 @@ const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
 
     function handleOnBuild(startPoint: Coordinates, endPoint: Coordinates): void {
         if (!selectedSign) return;
-        console.log(startPoint, endPoint);
         let mapTemplateCopy: MapTemplate = [...mapTemplateDraft];
+        if (selectedSign === 'p') {
+            removePlayer(mapTemplateCopy);
+        }
         for (let rowIndex = startPoint.y; rowIndex <= endPoint.y; rowIndex++) {
             let row: MapFieldSign[] = [...mapTemplateCopy[rowIndex]];
             for (let columnIndex = startPoint.x; columnIndex <= endPoint.x; columnIndex++) {
@@ -36,6 +39,14 @@ const Builder: React.FC<BuilderProps> = ({ mapTemplateToEdit, onSave }) => {
             mapTemplateCopy[rowIndex] = row;
         }
         setMapTemplateDraft(mapTemplateCopy);
+    }
+
+    function removePlayer(mapTemplate: MapTemplate): void {
+        let currentPlayerLocation = getPlayerLocation(mapTemplate);
+        if (currentPlayerLocation) {
+            mapTemplate[currentPlayerLocation.y] = [...mapTemplate[currentPlayerLocation.y]];
+            mapTemplate[currentPlayerLocation.y][currentPlayerLocation.x] = 'g';
+        }
     }
 
     return (

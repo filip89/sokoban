@@ -4,20 +4,18 @@ import { Field } from '../models/Field';
 import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
 
 export function getPlayerField(mapTemplate: MapTemplate): Field {
-    let coordinates: Coordinates = {
-        y: 0,
-        x: 0,
-    };
-    let lastYValue: number = mapTemplate.length;
-    for (let y = 0; y < lastYValue; y++) {
+    const coordinates: Coordinates = getPlayerLocation(mapTemplate) || {x: 0, y: 0};
+    return new Field(coordinates);
+}
+
+export function getPlayerLocation(mapTemplate: MapTemplate): Coordinates | undefined {
+    let rowCount: number = mapTemplate.length;
+    for (let y = 0; y < rowCount; y++) {
         let x: number = mapTemplate[y].findIndex((field) => field === 'p');
         if (~x) {
-            coordinates.y = y;
-            coordinates.x = x;
-            break;
+            return {x, y};
         }
     }
-    return new Field(coordinates);
 }
 
 function getFieldsOfSign(mapTemplate: MapTemplate, targetSign: MapFieldSign): Field[] {
