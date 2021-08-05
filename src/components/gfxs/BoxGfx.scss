@@ -1,0 +1,15 @@
+@import '../../styles/block';
+
+.block {
+    $boxColor: rgb(206, 144, 90);
+    &--box {
+        @include blockColor($boxColor);
+    }
+
+    &__box-cut {
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        border-left: 0.01em solid darken($color: $boxColor, $amount: 7%);
+    }
+}

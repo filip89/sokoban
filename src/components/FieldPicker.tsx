@@ -1,8 +1,10 @@
 import { MapFieldSign } from '../models/MapTemplate';
-import BlockGfx from './BlockGfx';
+import ObstacleGfx from './gfxs/ObstacleGfx';
 import './FieldPicker.scss';
-import TileGfx from './TileGfx';
+import TileGfx from './gfxs/TileGfx';
 import { FaEraser } from 'react-icons/fa';
+import BoxGfx from './gfxs/BoxGfx';
+import PlayerGfx from './gfxs/PlayerGfx';
 
 export interface FieldPickerProps {
     selectedSign?: MapFieldSign;
@@ -22,16 +24,16 @@ const FieldPicker: React.FC<FieldPickerProps> = ({ selectedSign, onPick }) => {
                 <FaEraser></FaEraser>
             </div>
             <div className={getFieldClassName('o')} key={'o'} onClick={() => onPick('o')}>
-                <BlockGfx type="obstacle"></BlockGfx>
+                <ObstacleGfx></ObstacleGfx>
             </div>
             <div className={getFieldClassName('d')} key={'d'} onClick={() => onPick('d')}>
                 <TileGfx type="destination"></TileGfx>
             </div>
             <div className={getFieldClassName('b')} key={'b'} onClick={() => onPick('b')}>
-                <BlockGfx type="box"></BlockGfx>
+                <BoxGfx></BoxGfx>
             </div>
             <div className={getFieldClassName('p')} key={'p'} onClick={() => onPick('p')}>
-                <BlockGfx type="player"></BlockGfx>
+                <PlayerGfx></PlayerGfx>
             </div>
             <div className={getFieldClassName('g')} key={'g'} onClick={() => onPick('g')}>
                 <TileGfx type="ground"></TileGfx>

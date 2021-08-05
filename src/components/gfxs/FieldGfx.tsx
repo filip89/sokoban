@@ -1,5 +1,7 @@
-import { MapFieldSign } from '../models/MapTemplate';
-import BlockGfx from './BlockGfx';
+import { MapFieldSign } from '../../models/MapTemplate';
+import BoxGfx from './BoxGfx';
+import ObstacleGfx from './ObstacleGfx';
+import PlayerGfx from './PlayerGfx';
 import TileGfx from './TileGfx';
 
 export interface FieldGfxProps {
@@ -8,10 +10,10 @@ export interface FieldGfxProps {
 
 const FieldGfx: React.FC<FieldGfxProps> = ({ sign }) => {
     if (sign === 'e') return <></>;
-    if (sign === 'o') return <BlockGfx type="obstacle"></BlockGfx>;
+    if (sign === 'o') return <ObstacleGfx></ObstacleGfx>;
     if (sign === 'd') return <TileGfx type="destination"></TileGfx>;
-    if (sign === 'b') return <BlockGfx type="box"></BlockGfx>;
-    if (sign === 'p') return <BlockGfx type="player"></BlockGfx>;
+    if (sign === 'b') return <BoxGfx></BoxGfx>;
+    if (sign === 'p') return <PlayerGfx></PlayerGfx>;
     return <TileGfx type="ground"></TileGfx>;
 };
 

@@ -1,7 +1,7 @@
 import './BuildArea.scss';
 import { Coordinates } from '../models/Coordinates';
 import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
-import FieldGfx from './FieldGfx';
+import FieldGfx from './gfxs/FieldGfx';
 import React, { useState } from 'react';
 
 const MemoizedFieldGfx = React.memo(FieldGfx);

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import BlockGfx from '../components/BlockGfx';
+import PlayerGfx from '../components/gfxs/PlayerGfx';
 import { Field } from '../models/Field';
 import { MapTemplate } from '../models/MapTemplate';
 import * as mapScanner from '../services/TemplateScanner';
@@ -18,7 +18,7 @@ function usePlayer(
     }, [mapTemplate]);
 
     useLayoutEffect(() => {
-        updateMovableElementPosition(playerRef.current!, playerField.coordinates)
+        updateMovableElementPosition(playerRef.current!, playerField.coordinates);
     }, [playerField]);
 
     const playerElement: JSX.Element = (
@@ -29,7 +29,7 @@ function usePlayer(
             onTransitionEnd={transitionEndHandler}
             style={{ zIndex: playerField.coordinates.y }}
         >
-            <BlockGfx type="player"></BlockGfx>
+            <PlayerGfx></PlayerGfx>
         </div>
     );
 

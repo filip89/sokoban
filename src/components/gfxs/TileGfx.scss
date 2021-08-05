@@ -1,8 +1,8 @@
-@import '../styles/global';
+@import '../../styles/global';
 
 @mixin tileColor($color) {
     background-color: $color;
-    border: solid darken($color, 10%) 1px;
+    border: solid darken($color, 5%) 0.01em;
 }
 
 .tile {

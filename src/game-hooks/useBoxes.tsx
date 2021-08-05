@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import BlockGfx from '../components/BlockGfx';
+import BoxGfx from '../components/gfxs/BoxGfx';
 import Box from '../models/Box';
 import { Coordinates } from '../models/Coordinates';
 import { MapTemplate } from '../models/MapTemplate';
@@ -46,7 +46,7 @@ function useBoxes(mapTemplate: MapTemplate): [Box[], React.Dispatch<React.SetSta
                 key={box.id}
                 data-box-id={box.id}
             >
-                <BlockGfx type="box"></BlockGfx>
+                <BoxGfx></BoxGfx>
             </div>
         ));
     }, [boxesInitialData]);

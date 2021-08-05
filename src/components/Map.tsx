@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import { MapFieldSign, MapTemplate } from '../models/MapTemplate';
-import FieldGfx from './FieldGfx';
+import FieldGfx from './gfxs/FieldGfx';
 import './Map.scss';
 
 export interface MapProps {

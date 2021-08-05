@@ -1,0 +1,27 @@
+@import './global';
+
+@mixin blockColor($color) {
+    .block__top {
+        background-color: $color;
+    }
+    .block__bottom {
+        background-color: darken($color, 15%);
+    }
+}
+
+.block {
+    @include fieldSquare;
+    position: relative;
+    $height: calc(1em / 2);
+    &__top {
+        @include fieldSquare;
+        position: absolute;
+        bottom: $height;
+    }
+    &__bottom {
+        position: absolute;
+        bottom: 0;
+        width: 1em;
+        height: $height;
+    }
+}
