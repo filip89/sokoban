@@ -1,6 +1,5 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import useInput from '../game-hooks/useInput';
-import useLoop from '../game-hooks/useLoop';
 import Box from '../models/Box';
 import { Coordinates } from '../models/Coordinates';
 import * as mapScanner from '../services/TemplateScanner';
@@ -38,8 +37,6 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
         }, 0);
     }, [boxesState, destinationLocations]);
 
-    useLoop(tryToMove, 10);
-
     const reset = useCallback(() => {
         setPlayerField(mapScanner.getPlayerField(mapTemplate));
         setBoxesState(mapScanner.getBoxes(mapTemplate));
@@ -49,6 +46,12 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     useLayoutEffect(() => {
         reset();
     }, [mapTemplate, reset]);
+
+    useEffect(() => {
+        if (!isAnimating && currentInput) {
+            tryToMove();
+        }
+    });
 
     function tryToMove(): void {
         if (isAnimating || !currentInput || completed) return;
