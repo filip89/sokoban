@@ -3,13 +3,13 @@
 .top-menu {
     display: flex;
     height: $menu-height;
-    background-color: lighten($background-color, 20%);
+    background-color: $app-secondary-color;
 
     &__button {
-        flex-shrink: 0;
+        flex: none;
         @include square($menu-height);
         cursor: pointer;
-        background-color: $background-color;
+        background-color: $app-color;
         color: white;
     }
 

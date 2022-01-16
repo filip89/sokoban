@@ -5,16 +5,20 @@
     height: 100%;
 
     &__toolbar {
+        align-self: flex-start;
+        max-height: 100%;
         overflow: auto;
-        flex-shrink: 0;
+        flex: none;
         display: flex;
         flex-direction: column;
         gap: 30px;
         padding: 20px;
+        background-color: $app-secondary-color;
+        border-radius: 0 1rem 1rem 0;
     }
 
     &__build-area {
-        flex-grow: 1;
+        flex: 1;
         overflow: auto;
     }
 
@@ -24,7 +28,7 @@
 
     &__action-button {
         @extend .plain-button;
-        flex-grow: 1;
+        flex: 1;
         cursor: pointer;
         padding: 0.5rem 0;
         transition: 0.2s background-color;

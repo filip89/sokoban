@@ -7,6 +7,6 @@
 
     &__field-slot {
         @include fieldSquare;
-        flex-shrink: 0;
+        flex: none;
     }
 }

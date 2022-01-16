@@ -21,7 +21,7 @@ const MapsPicker: React.FC<MapsPickerProps> = ({ maps, isEditMode, selectedMapId
         <div className="maps-container">
             {maps.map((map) => (
                 <div
-                    className={'maps-container__map map-item' + (map.id === selectedMapId ? ' map-item--selected' : '')}
+                    className={'maps-container__map-item map-item' + (map.id === selectedMapId ? ' map-item--selected' : '')}
                     key={map.id}
                     onClick={() => onMapSelect(map)}
                 >

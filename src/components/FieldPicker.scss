@@ -13,7 +13,6 @@
         height: $size;
         width: $size;
         border-radius: 5px;
-
         display: flex;
         justify-content: center;
         align-items: center;
@@ -21,16 +20,12 @@
         color: black;
         cursor: pointer;
 
-        &:hover {
+        &:hover:not(&--active) {
             background-color: lighten($select-color, 30%);
         }
 
         &--active {
             background-color: $select-color;
-
-            &:hover {
-                background-color: $select-color;
-            }
         }
     }
 }

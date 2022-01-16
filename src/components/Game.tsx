@@ -103,15 +103,15 @@ const Game: React.FC<GameProps> = ({ mapTemplate }) => {
     }
 
     return (
-        <div className="game-wrapper">
-            <div className="game-wrapper__status">
+        <div className="game">
+            <div className="game__status">
                 <button className="reset-btn" onClick={reset}>
                     <BiReset size="22" />
                 </button>
                 <div>Boxes left: {boxesLeft}</div>
             </div>
-            <div className="game-wrapper__game">
-                <div className="game">
+            <div className="game__game-map">
+                <div className="game-map">
                     <Map template={mapTemplate}></Map>
                     {playerElement}
                     {boxesElements}

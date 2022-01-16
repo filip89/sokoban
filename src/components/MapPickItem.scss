@@ -18,17 +18,6 @@
     }
 }
 
-.maps-container {
-    display: flex;
-    $item-gap: 5px;
-    gap: $item-gap;
-    padding: 0 $item-gap;
-
-    &__map-item {
-        flex: none;
-    }
-}
-
 .map-item {
     @include square($menu-height);
     border-radius: 1rem 1rem 0 0;

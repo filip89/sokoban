@@ -4,7 +4,7 @@ export interface PlayerGfxProps {}
 
 const PlayerGfx: React.FC<PlayerGfxProps> = () => {
     return (
-        <div className={'block block--player'}>
+        <div className="block block--player">
             <div className="block__top">
                 <div className="block__player-sign">P</div>
             </div>
